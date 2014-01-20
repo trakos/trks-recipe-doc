@@ -9,16 +9,11 @@ import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.gen.FlatGeneratorInfo;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import trks.recipedoc.generate.DataLoader;
+import trks.recipedoc.generate.DataSaver;
 
-import java.lang.reflect.Method;
 import java.util.EnumSet;
 
-/**
- * Created by trakos on 18.01.14.
- */
 public class TickHandler implements ITickHandler
 {
     boolean gameStarted = false;
@@ -29,17 +24,25 @@ public class TickHandler implements ITickHandler
     {
         if (!gameStarted)
         {
-            try
+            DataSaver.init();
+
+            int iconWidth = 512;
+            int iconHeight = 512;
+            if (Minecraft.getMinecraft().displayWidth != iconWidth || Minecraft.getMinecraft().displayWidth != iconHeight)
             {
-                Minecraft.getMinecraft().toggleFullscreen();
-                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 160, "tempDisplayWidth", "field_71436_X");
-                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 160, "tempDisplayHeight", "field_71435_Y");
-                Minecraft.getMinecraft().toggleFullscreen();
+                try
+                {
+                    Minecraft.getMinecraft().toggleFullscreen();
+                    ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), iconWidth, "tempDisplayWidth", "field_71436_X");
+                    ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), iconHeight, "tempDisplayHeight", "field_71435_Y");
+                    Minecraft.getMinecraft().toggleFullscreen();
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e);
+                }
             }
-            catch (Exception e)
-            {
-                System.err.println(e);
-            }
+
             gameStarted = true;
             long seed = 1;
             WorldSettings worldsettings = new WorldSettings(seed, EnumGameType.SURVIVAL, false, false, WorldType.FLAT);

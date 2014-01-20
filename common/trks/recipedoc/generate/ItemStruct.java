@@ -1,4 +1,4 @@
-package trks.recipedoc.client;
+package trks.recipedoc.generate;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
