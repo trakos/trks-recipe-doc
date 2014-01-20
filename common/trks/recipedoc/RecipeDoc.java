@@ -23,6 +23,8 @@ import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.gen.FlatGeneratorInfo;
+import net.minecraftforge.common.MinecraftForge;
+import trks.recipedoc.client.DataLoader;
 import trks.recipedoc.client.TickHandler;
 
 import java.io.Console;
@@ -53,6 +55,7 @@ public class RecipeDoc
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+        MinecraftForge.EVENT_BUS.register(new DataLoader());
     }
 
 

@@ -29,18 +29,17 @@ public class TickHandler implements ITickHandler
     {
         if (!gameStarted)
         {
-            /*try
+            try
             {
                 Minecraft.getMinecraft().toggleFullscreen();
-                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 64, "tempDisplayWidth", "");
-                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 64, "tempDisplayHeight", "64");
+                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 160, "tempDisplayWidth", "field_71436_X");
+                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), 160, "tempDisplayHeight", "field_71435_Y");
                 Minecraft.getMinecraft().toggleFullscreen();
-
             }
             catch (Exception e)
             {
                 System.err.println(e);
-            }*/
+            }
             gameStarted = true;
             long seed = 1;
             WorldSettings worldsettings = new WorldSettings(seed, EnumGameType.SURVIVAL, false, false, WorldType.FLAT);
@@ -64,9 +63,9 @@ public class TickHandler implements ITickHandler
         System.out.println(tickNumber);
         if (tickNumber == 10)
         {
+            DataLoader.ready = true;
             DataLoader.load();
-
-            mc.shutdown();
+            Minecraft.getMinecraft().shutdown();
         }
     }
 
