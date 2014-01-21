@@ -31,6 +31,19 @@
     <orderEntry type="library" name="lwjgl_util-2.9.0" level="project" />
     <orderEntry type="library" name="lzma-0.0.1" level="project" />
     <orderEntry type="module" module-name="Mekanism" />
+    <orderEntry type="module-library">
+      <library name="PHP">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../starbound_log/trks" />
+          <root url="file://$MODULE_DIR$/../../starbound_log/zend" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../starbound_log/trks" />
+          <root url="file://$MODULE_DIR$/../../starbound_log/zend" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

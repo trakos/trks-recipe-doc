@@ -1,9 +1,6 @@
-package trks.recipedoc.generate;
+package trks.recipedoc.generate.structs;
 
 import com.google.common.collect.Multimap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +10,12 @@ import java.util.Map;
 public class ItemStruct
 {
     public int id;
+    public int damage;
     public String name;
     public List<String> tooltipDescription = new ArrayList<String>();
     public String description;
-    public Multimap<String, String> attributes;
+    public Map<String, String> attributes = new HashMap<String, String>();
+    public String icon;
+    public String mod;
+    public String type;
 }

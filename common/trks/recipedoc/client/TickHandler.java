@@ -1,7 +1,6 @@
 package trks.recipedoc.client;
 
 import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.stats.StatList;
@@ -9,8 +8,9 @@ import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.gen.FlatGeneratorInfo;
-import trks.recipedoc.generate.DataLoader;
-import trks.recipedoc.generate.DataSaver;
+import trks.recipedoc.generate.Generate;
+import trks.recipedoc.generate.loaders.DataLoader;
+import trks.recipedoc.minecraft.RendererHelper;
 
 import java.util.EnumSet;
 
@@ -24,24 +24,7 @@ public class TickHandler implements ITickHandler
     {
         if (!gameStarted)
         {
-            DataSaver.init();
-
-            int iconWidth = 512;
-            int iconHeight = 512;
-            if (Minecraft.getMinecraft().displayWidth != iconWidth || Minecraft.getMinecraft().displayWidth != iconHeight)
-            {
-                try
-                {
-                    Minecraft.getMinecraft().toggleFullscreen();
-                    ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), iconWidth, "tempDisplayWidth", "field_71436_X");
-                    ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), iconHeight, "tempDisplayHeight", "field_71435_Y");
-                    Minecraft.getMinecraft().toggleFullscreen();
-                }
-                catch (Exception e)
-                {
-                    System.err.println(e);
-                }
-            }
+            RendererHelper.resizeWindow(512, 512);
 
             gameStarted = true;
             long seed = 1;
@@ -66,8 +49,7 @@ public class TickHandler implements ITickHandler
         System.out.println(tickNumber);
         if (tickNumber == 10)
         {
-            DataLoader.ready = true;
-            DataLoader.load();
+            Generate.generate();
             Minecraft.getMinecraft().shutdown();
         }
     }

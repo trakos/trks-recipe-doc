@@ -1,5 +1,7 @@
 package trks.recipedoc.minecraft;
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 
 
@@ -16,5 +18,23 @@ public class RendererHelper
         tessellator.addVertexWithUV((double)(par1 + par5), (double)(par2 + 0), (double)zLevel, (double)((float)(par3 + par5) * f), (double)((float)(par4 + 0) * f1));
         tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)zLevel, (double)((float)(par3 + 0) * f), (double)((float)(par4 + 0) * f1));
         tessellator.draw();
+    }
+
+    static public void resizeWindow(int width, int height)
+    {
+        if (Minecraft.getMinecraft().displayWidth != width || Minecraft.getMinecraft().displayWidth != height)
+        {
+            try
+            {
+                Minecraft.getMinecraft().toggleFullscreen();
+                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), width, "tempDisplayWidth", "field_71436_X");
+                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), height, "tempDisplayHeight", "field_71435_Y");
+                Minecraft.getMinecraft().toggleFullscreen();
+            }
+            catch (Exception e)
+            {
+                System.err.println(e);
+            }
+        }
     }
 }
