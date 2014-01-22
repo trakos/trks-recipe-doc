@@ -58,9 +58,9 @@ public class IconRenderer
         GL11.glPopMatrix();
     }
 
-    static final float COLOR_R = 139f / 255;
-    static final float COLOR_G = 139f / 255;
-    static final float COLOR_B = 139f / 255;
+    static final float COLOR_R = 1f / 255;
+    static final float COLOR_G = 1f;
+    static final float COLOR_B = 1f / 255;
 
     static protected void renderItem(ItemStack itemStack)
     {
