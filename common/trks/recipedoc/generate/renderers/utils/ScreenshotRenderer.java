@@ -3,7 +3,6 @@ package trks.recipedoc.generate.renderers.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ScreenShotHelper;
 import trks.recipedoc.generate.Generate;
-import trks.recipedoc.generate.renderers.DataRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,11 +34,26 @@ public class ScreenshotRenderer
 
     static public void saveTrimmedScreenshot(File target, int width, int height)
     {
+        saveTrimmedScreenshot(target, 0, 0, width, height);
+    }
+
+    static public void saveTrimmedScreenshot(File target, int x, int y, int width, int height)
+    {
+        saveTrimmedScreenshot(target, x, y, width, height, null);
+    }
+
+    static public void saveTrimmedScreenshot(File target, int x, int y, int width, int height, Color transparencyColor)
+    {
         saveScreenshot(target);
 
         try
         {
-            ImageIO.write(/*makeColorTransparent(*/ImageIO.read(target).getSubimage(0, 0, width, height)/*, Color.white)*/, "png", target);
+            BufferedImage bufferedImage = ImageIO.read(target).getSubimage(x, y, width, height);
+            if (transparencyColor != null)
+            {
+                bufferedImage = makeColorTransparent(bufferedImage, transparencyColor);
+            }
+            ImageIO.write(bufferedImage, "png", target);
         }
         catch (IOException e)
         {
@@ -119,5 +133,50 @@ public class ScreenshotRenderer
             }
         });
         return files == null ? new File[0] : files;
+    }
+
+    /**
+     * Converts any string into a string that is safe to use as a file name.
+     * The result will only include ascii characters and numbers, and the "-","_", and "." characters.
+     *
+     * @param name name to encode
+     * @param dirSeparators whether to leave dir separators untouched
+     * @param maxFileLength trim name to given length
+     * @return encoded name
+     */
+    public static String toFileSystemSafeName(String name, boolean dirSeparators, int maxFileLength)
+    {
+        int size = name.length();
+        StringBuilder stringBuilder = new StringBuilder(size * 2);
+        for (int i = 0; i < size; i++)
+        {
+            char c = name.charAt(i);
+            boolean valid = c >= 'a' && c <= 'z';
+            valid = valid || (c >= 'A' && c <= 'Z');
+            valid = valid || (c >= '0' && c <= '9');
+            valid = valid || (c == '_') || (c == '-') || (c == '.') || (c == '#')
+                    || (dirSeparators && ((c == '/') || (c == '\\')));
+
+            if (valid)
+            {
+                stringBuilder.append(c);
+            }
+            else if (c == ' ')
+            {
+                stringBuilder.append('_');
+            }
+            else
+            {
+                // Encode the character using hex notation
+                stringBuilder.append('#');
+                stringBuilder.append(HexUtils.toHexFromInt(c, true));
+            }
+        }
+        String result = stringBuilder.toString();
+        if (result.length() > maxFileLength)
+        {
+            result = result.substring(result.length() - maxFileLength, result.length());
+        }
+        return result;
     }
 }

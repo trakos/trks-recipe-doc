@@ -46,8 +46,8 @@ public class TickHandler implements ITickHandler
         {
             tickNumber++;
         }
-        System.out.println(tickNumber);
-        if (tickNumber == 10)
+        // for now it is 1, it seems to work even in the first frame
+        if (tickNumber == 1)
         {
             Generate.generate();
             Minecraft.getMinecraft().shutdown();

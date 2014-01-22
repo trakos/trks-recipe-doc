@@ -11,9 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import trks.recipedoc.generate.Generate;
-import trks.recipedoc.generate.renderers.DataRenderer;
-import trks.recipedoc.minecraft.RendererHelper;
 
+import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class RecipeBackgroundRenderer
 {
     static public String getRecipeHandlerImageName(IRecipeHandler recipeHandler)
     {
-        return recipeHandler.getRecipeName() + ".png";
+        return ScreenshotRenderer.toFileSystemSafeName(recipeHandler.getRecipeName().toLowerCase(), false, 32) + ".png";
     }
 
     static public void renderAll(ArrayList<ICraftingHandler> craftingHandlers)
@@ -49,9 +48,13 @@ public class RecipeBackgroundRenderer
     {
     }
 
+    static final float COLOR_R = 1f / 255;
+    static final float COLOR_G = 1f;
+    static final float COLOR_B = 1f / 255;
+
     static protected void renderRecipeHandlerBackground(ICraftingHandler craftingHandler)
     {
-        GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
+        GL11.glClearColor(COLOR_R, COLOR_G, COLOR_B, 1);
 
         if (Tessellator.instance.isDrawing)
         {
@@ -59,7 +62,7 @@ public class RecipeBackgroundRenderer
         }
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
+        GL11.glClearColor(COLOR_R, COLOR_G, COLOR_B, 1);
 
         Constructor<?> constructor = GuiCraftingRecipe.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
@@ -68,7 +71,7 @@ public class RecipeBackgroundRenderer
             ICraftingHandler[] craftingHandlers = {craftingHandler};
             GuiCraftingRecipe recipe = (GuiCraftingRecipe) constructor.newInstance(Minecraft.getMinecraft().currentScreen, new ArrayList<ICraftingHandler>(Arrays.asList(craftingHandlers)));
             Minecraft.getMinecraft().displayGuiScreen(recipe);
-            GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
+            GL11.glClearColor(COLOR_R, COLOR_G, COLOR_B, 1);
 
             GL11.glColor4f(1, 1, 1, 1);
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("nei:textures/gui/recipebg.png"));
@@ -90,7 +93,9 @@ public class RecipeBackgroundRenderer
             craftingHandler.drawBackground(0);
             GL11.glPopMatrix();
 
-            ScreenshotRenderer.saveScreenshot(new File(Generate.craftingHandlersBackgroundsDirectory + "/" + getRecipeHandlerImageName(craftingHandler)));
+            File targetFile = new File(Generate.craftingHandlersBackgroundsDirectory + "/" + getRecipeHandlerImageName(craftingHandler));
+            int y = 46;
+            ScreenshotRenderer.saveTrimmedScreenshot(targetFile, 0, y, 512, 246 - y, new Color(COLOR_R, COLOR_G, COLOR_B));
         }
         catch (Exception e)
         {
