@@ -20,9 +20,9 @@ public class RendererHelper
         tessellator.draw();
     }
 
-    static public void resizeWindow(int width, int height)
+    static public void resizeWindow(int width, int height, boolean force)
     {
-        if (Minecraft.getMinecraft().displayWidth != width || Minecraft.getMinecraft().displayWidth != height)
+        if (force || Minecraft.getMinecraft().displayWidth != width || Minecraft.getMinecraft().displayWidth != height)
         {
             try
             {

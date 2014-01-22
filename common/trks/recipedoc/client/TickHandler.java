@@ -3,6 +3,8 @@ package trks.recipedoc.client;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.EnumOptions;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
@@ -24,7 +26,7 @@ public class TickHandler implements ITickHandler
     {
         if (!gameStarted)
         {
-            RendererHelper.resizeWindow(512, 512);
+            RendererHelper.resizeWindow(512, 512, false);
 
             gameStarted = true;
             long seed = 1;
@@ -47,7 +49,7 @@ public class TickHandler implements ITickHandler
             tickNumber++;
         }
         // for now it is 1, it seems to work even in the first frame
-        if (tickNumber == 1)
+        if (tickNumber == 10)
         {
             Generate.generate();
             Minecraft.getMinecraft().shutdown();
