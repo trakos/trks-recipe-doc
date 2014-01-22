@@ -42,6 +42,7 @@ public class RecipeBackgroundRenderer
     {
         ScreenshotRenderer.deleteAllScreenshots();
         Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Minecraft.getMinecraft().thePlayer));
+        GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
     }
 
     static protected void endRecipesRendering()
@@ -50,6 +51,7 @@ public class RecipeBackgroundRenderer
 
     static protected void renderRecipeHandlerBackground(ICraftingHandler craftingHandler)
     {
+        GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
 
         if (Tessellator.instance.isDrawing)
         {
@@ -57,7 +59,7 @@ public class RecipeBackgroundRenderer
         }
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(1, 1, 1, 1);
+        GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
 
         Constructor<?> constructor = GuiCraftingRecipe.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
@@ -66,7 +68,7 @@ public class RecipeBackgroundRenderer
             ICraftingHandler[] craftingHandlers = {craftingHandler};
             GuiCraftingRecipe recipe = (GuiCraftingRecipe) constructor.newInstance(Minecraft.getMinecraft().currentScreen, new ArrayList<ICraftingHandler>(Arrays.asList(craftingHandlers)));
             Minecraft.getMinecraft().displayGuiScreen(recipe);
-            GL11.glClearColor(1, 1, 1, 1);
+            GL11.glClearColor(32f / 255f, 32f / 255f, 32f / 255f, 1);
 
             GL11.glColor4f(1, 1, 1, 1);
             Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("nei:textures/gui/recipebg.png"));
@@ -82,7 +84,8 @@ public class RecipeBackgroundRenderer
                 float scale = Math.min((float)sWidth / xSize, (float)sHeight / ySize);
                 GL11.glScalef(scale, scale, 1);
             }
-            RendererHelper.drawTexturedModalRect(0, 0, 0, 0, 176, 166, 0);
+            //RendererHelper.drawTexturedModalRect(0, 0, 0, 0, 176, 166, 0);
+
             GL11.glTranslatef(5, 16, 0);
             craftingHandler.drawBackground(0);
             GL11.glPopMatrix();

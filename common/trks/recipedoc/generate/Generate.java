@@ -41,7 +41,7 @@ public class Generate
     {
         init();
         DataLoader.load();
-        //DataRenderer.render();
+        DataRenderer.render();
 
         XmlExporter.export(DataLoader.items, DataLoader.recipes, DataLoader.recipeHandlers, new File(xmlFile));
         PhpExporter.export(DataLoader.items, DataLoader.recipes, DataLoader.recipeHandlers, new File(phpFile));

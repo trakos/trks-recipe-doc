@@ -1,6 +1,7 @@
 package trks.recipedoc.generate.exporter;
 
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import trks.recipedoc.generate.structs.ItemStruct;
@@ -43,6 +44,9 @@ public class XmlExporter
                 itemElement.setAttribute("icon", item.icon);
                 itemElement.setAttribute("description", item.description);
                 itemElement.setAttribute("name", item.name);
+                itemElement.setAttribute("mod", item.mod);
+                itemElement.setAttribute("type", item.type);
+                itemElement.setAttribute("tooltip", StringUtils.join(item.tooltipDescription, "; "));
 
                 for (String key : item.attributes.keySet())
                 {

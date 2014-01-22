@@ -106,7 +106,7 @@ public class DataNEIFetcher
                 }
                 else if(item instanceof ItemSword)
                 {
-                    return "Items.Tools.Other";
+                    return "Items.Weapons.Swords";
                 }
                 else if(item instanceof ItemArmor)
                 {
