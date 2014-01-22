@@ -2,6 +2,7 @@ package trks.recipedoc.generate.structs;
 
 import codechicken.nei.PositionedStack;
 import net.minecraft.item.ItemStack;
+import trks.recipedoc.modsupport.ModSupportHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,14 +16,23 @@ public class RecipeItemStruct
 
     public class RecipeItemIdStruct
     {
-        public RecipeItemIdStruct(int itemId, int damageId)
+        protected final ItemStack itemStack;
+
+        public RecipeItemIdStruct(int itemId, int damageId, ItemStack itemStack)
         {
             this.itemId = itemId;
             this.damageId = damageId;
+            this.itemStack = itemStack;
         }
 
         public int itemId;
         public int damageId;
+
+
+        public ItemStack getItemStack()
+        {
+            return itemStack;
+        }
     }
 
     public int relativeX;
@@ -30,15 +40,6 @@ public class RecipeItemStruct
     public RecipeElementType elementType;
     public Collection<RecipeItemIdStruct> itemIds;
     public int amount;
-
-    public RecipeItemStruct(int relativeX, int relativeY, RecipeElementType elementType, Collection<RecipeItemIdStruct> itemIds, int amount)
-    {
-        this.relativeX = relativeX;
-        this.relativeY = relativeY;
-        this.elementType = elementType;
-        this.itemIds = itemIds;
-        this.amount = amount;
-    }
 
     public RecipeItemStruct(PositionedStack stack, RecipeElementType elementType)
     {
@@ -49,7 +50,7 @@ public class RecipeItemStruct
         ArrayList<RecipeItemIdStruct> recipeItems = new ArrayList<RecipeItemIdStruct>();
         for (ItemStack item : stack.items)
         {
-            recipeItems.add(new RecipeItemIdStruct(item.itemID, item.getItemDamage()));
+            recipeItems.add(ModSupportHandler.correctRecipeItemStruct(new RecipeItemIdStruct(item.itemID, item.getItemDamage(), item)));
         }
         this.itemIds = recipeItems;
         this.amount = stack.items.length > 0 ? stack.items[0].stackSize : 0;

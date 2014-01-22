@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.client.TickHandler;
 
-@Mod(modid = "TrksRecipeDocId", name = "TrksRecipeDoc", version = "0.0.1")
+@Mod(modid = "TrksRecipeDocId", name = "TrksRecipeDoc", version = "0.0.1", dependencies = "after:Mekanism")
 @NetworkMod(clientSideRequired = true)
 public class RecipeDoc
 {

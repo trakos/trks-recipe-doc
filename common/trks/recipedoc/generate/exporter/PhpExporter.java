@@ -60,6 +60,12 @@ public class PhpExporter extends PrintWriter
         printArrayAssign(key, Integer.toString(value));
     }
 
+    public void printArrayAssign(String key, boolean value)
+    {
+        // we can't call string printArrayAssign, because it would put true/false into quotes
+        println("'" + key + "' => " + (value ? "true" : "false") + ",");
+    }
+
     protected void printClassField(String fieldName, String fieldType)
     {
         println("/**");
@@ -93,7 +99,7 @@ public class PhpExporter extends PrintWriter
     }
 
 
-    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, File target)
+    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
     {
         try
         {
@@ -105,6 +111,7 @@ public class PhpExporter extends PrintWriter
                     .put("items", "Item[]")
                     .put("recipes", "Recipe[]")
                     .put("recipeTypes", "RecipeHandler[]")
+                    .put("itemCategories", "string[]")
                     .build());
             writer.printClass("Item", (new ImmutableMap.Builder<String, String>())
                     .put("id", "int")
@@ -113,8 +120,10 @@ public class PhpExporter extends PrintWriter
                     .put("name", "string")
                     .put("mod", "string")
                     .put("type", "string")
+                    .put("category", "string")
                     .put("description", "string")
                     .put("attributes", "string[]")
+                    .put("showOnList", "bool")
                     .build());
             writer.printClass("ItemId", (new ImmutableMap.Builder<String, String>())
                     .put("id", "int")
@@ -130,6 +139,7 @@ public class PhpExporter extends PrintWriter
             writer.printClass("Recipe", (new ImmutableMap.Builder<String, String>())
                     .put("recipeHandler", "string")
                     .put("ingredients", "RecipeIngredient[]")
+                    .put("visible", "Boolean")
                     .build());
             writer.printClass("RecipeHandler", (new ImmutableMap.Builder<String, String>())
                     .put("id", "string")
@@ -146,11 +156,13 @@ public class PhpExporter extends PrintWriter
                     {
                         writer.printArrayAssign("id", item.id);
                         writer.printArrayAssign("damage", item.damage);
-                        writer.printArrayAssign("icon", item.icon);
+                        writer.printArrayAssign("icon", item.getIconName());
                         writer.printArrayAssign("name", item.name);
                         writer.printArrayAssign("mod", item.mod);
                         writer.printArrayAssign("type", item.type);
+                        writer.printArrayAssign("category", item.category);
                         writer.printArrayAssign("description", item.description);
+                        writer.printArrayAssign("showOnList", item.showOnList);
                         writer.printlnAndIndent("'attributes' => array(");
                         for (String key : item.attributes.keySet())
                         {
@@ -173,6 +185,7 @@ public class PhpExporter extends PrintWriter
                     writer.printlnAndIndent("new Recipe(array(");
                     {
                         writer.printArrayAssign("recipeHandler", recipe.recipeHandlerName);
+                        writer.printArrayAssign("visible", recipe.visible);
                         writer.printlnAndIndent("'ingredients' => array(");
                         {
                             for (RecipeItemStruct item : recipe.items)
@@ -217,7 +230,12 @@ public class PhpExporter extends PrintWriter
                 }
                 writer.undoIndentAndPrintln("),");
 
-
+                writer.printlnAndIndent("'itemCategories' => array(");
+                for (String category : itemCategories)
+                {
+                    writer.println("'" + category + "',");
+                }
+                writer.undoIndentAndPrintln("),");
             }
             writer.undoIndentAndPrintln("));");
             writer.close();

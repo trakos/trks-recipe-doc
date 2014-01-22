@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class XmlExporter
 {
-    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, File target)
+    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
     {
         try
         {
@@ -41,11 +41,13 @@ public class XmlExporter
                 itemsElement.appendChild(itemElement);
                 itemElement.setAttribute("id", Integer.toString(item.id));
                 itemElement.setAttribute("damage", Integer.toString(item.damage));
-                itemElement.setAttribute("icon", item.icon);
+                itemElement.setAttribute("icon", item.getIconName());
                 itemElement.setAttribute("description", item.description);
                 itemElement.setAttribute("name", item.name);
                 itemElement.setAttribute("mod", item.mod);
                 itemElement.setAttribute("type", item.type);
+                itemElement.setAttribute("category", item.category);
+                itemElement.setAttribute("showOnList", item.showOnList ? "1" : "0");
                 itemElement.setAttribute("tooltip", StringUtils.join(item.tooltipDescription, "; "));
 
                 for (String key : item.attributes.keySet())
@@ -67,6 +69,7 @@ public class XmlExporter
                 recipesElement.appendChild(recipeElement);
 
                 recipeElement.setAttribute("handlerName", recipe.recipeHandlerName);
+                recipeElement.setAttribute("visible", recipe.visible ? "1" : "0");
 
                 for (RecipeItemStruct item : recipe.items)
                 {
@@ -101,6 +104,17 @@ public class XmlExporter
                 itemElement.setAttribute("id", recipeType.typeId);
                 itemElement.setAttribute("name", recipeType.name);
                 itemElement.setAttribute("image", recipeType.image);
+            }
+
+            Element itemCategoriesElement = doc.createElement("itemCategories");
+            rootElement.appendChild(itemCategoriesElement);
+
+            for (String itemCategory : itemCategories)
+            {
+                Element categoryElement = doc.createElement("category");
+                itemCategoriesElement.appendChild(categoryElement);
+
+                categoryElement.setAttribute("name", itemCategory);
             }
 
             // write the content into xml file
