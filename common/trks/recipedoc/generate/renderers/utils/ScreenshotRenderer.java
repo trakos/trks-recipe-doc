@@ -32,9 +32,15 @@ public class ScreenshotRenderer
         moveImageTo(target);
     }
 
+
     static public void saveTrimmedScreenshot(File target, int width, int height)
     {
-        saveTrimmedScreenshot(target, 0, 0, width, height);
+        saveTrimmedScreenshot(target, width, height, null);
+    }
+
+    public static void saveTrimmedScreenshot(File target, int width, int height, Color color)
+    {
+        saveTrimmedScreenshot(target, 0, 0, width, height, color);
     }
 
     static public void saveTrimmedScreenshot(File target, int x, int y, int width, int height)

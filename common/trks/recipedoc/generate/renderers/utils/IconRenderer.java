@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL12;
 import trks.recipedoc.generate.Generate;
 import trks.recipedoc.generate.renderers.DataRenderer;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -54,18 +55,22 @@ public class IconRenderer
         GL11.glPopMatrix();
     }
 
+    static final float COLOR_R = 139f / 255;
+    static final float COLOR_G = 139f / 255;
+    static final float COLOR_B = 139f / 255;
+
     static protected void renderItem(ItemStack itemStack)
     {
         if (Tessellator.instance.isDrawing)
         {
             Tessellator.instance.draw();
         }
-        GL11.glClearColor(139f / 255f, 139f / 255f, 139f / 255f, 1);
+        GL11.glClearColor(COLOR_R, COLOR_G, COLOR_B, 1);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         drawItemStack(itemStack, 0, 0, "overlay");
 
-        ScreenshotRenderer.saveTrimmedScreenshot(new File(Generate.iconDirectory + "/" + getIconName(itemStack)), 160, 160);
+        ScreenshotRenderer.saveTrimmedScreenshot(new File(Generate.iconDirectory + "/" + getIconName(itemStack)), 160, 160, new Color(COLOR_R, COLOR_G, COLOR_B));
     }
 
     static protected void drawItemStack(ItemStack par1ItemStack, int par2, int par3, String par4Str)
