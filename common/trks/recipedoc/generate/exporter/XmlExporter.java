@@ -76,6 +76,7 @@ public class XmlExporter
                     recipeItemElement.setAttribute("type", item.elementType.toString());
                     recipeItemElement.setAttribute("x", Integer.toString(item.relativeX));
                     recipeItemElement.setAttribute("y", Integer.toString(item.relativeY));
+                    recipeItemElement.setAttribute("amount", Integer.toString(item.amount));
 
                     for (RecipeItemStruct.RecipeItemIdStruct recipeItemId : item.itemIds)
                     {

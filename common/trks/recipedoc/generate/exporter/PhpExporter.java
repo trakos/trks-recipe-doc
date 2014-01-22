@@ -124,6 +124,7 @@ public class PhpExporter extends PrintWriter
                     .put("type", "string")
                     .put("x", "int")
                     .put("y", "int")
+                    .put("amount", "int")
                     .put("items", "ItemId[]")
                     .build());
             writer.printClass("Recipe", (new ImmutableMap.Builder<String, String>())
@@ -181,6 +182,7 @@ public class PhpExporter extends PrintWriter
                                     writer.printArrayAssign("type", item.elementType.toString());
                                     writer.printArrayAssign("x", item.relativeX);
                                     writer.printArrayAssign("y", item.relativeY);
+                                    writer.printArrayAssign("amount", item.amount);
                                     writer.printlnAndIndent("'items' => array(");
                                     for (RecipeItemStruct.RecipeItemIdStruct itemIdStruct : item.itemIds)
                                     {

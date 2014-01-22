@@ -29,13 +29,15 @@ public class RecipeItemStruct
     public int relativeY;
     public RecipeElementType elementType;
     public Collection<RecipeItemIdStruct> itemIds;
+    public int amount;
 
-    public RecipeItemStruct(int relativeX, int relativeY, RecipeElementType elementType, Collection<RecipeItemIdStruct> itemIds)
+    public RecipeItemStruct(int relativeX, int relativeY, RecipeElementType elementType, Collection<RecipeItemIdStruct> itemIds, int amount)
     {
         this.relativeX = relativeX;
         this.relativeY = relativeY;
         this.elementType = elementType;
         this.itemIds = itemIds;
+        this.amount = amount;
     }
 
     public RecipeItemStruct(PositionedStack stack, RecipeElementType elementType)
@@ -50,5 +52,6 @@ public class RecipeItemStruct
             recipeItems.add(new RecipeItemIdStruct(item.itemID, item.getItemDamage()));
         }
         this.itemIds = recipeItems;
+        this.amount = stack.items.length > 0 ? stack.items[0].stackSize : 0;
     }
 }
