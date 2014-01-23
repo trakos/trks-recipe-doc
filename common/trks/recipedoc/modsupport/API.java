@@ -15,6 +15,7 @@ public class API
     static
     {
         docModSupports = new ArrayList<IDocModSupport>();
+        registerModSupport(new MekanismSupport());
     }
 
     static public final ArrayList<IDocModSupport> docModSupports;
