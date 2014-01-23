@@ -1,8 +1,10 @@
 package trks.recipedoc.modsupport.mods;
 
+import codechicken.nei.recipe.FurnaceRecipeHandler;
 import codechicken.nei.recipe.ICraftingHandler;
 import com.google.common.collect.ImmutableMap;
 import mekanism.api.gas.IGasItem;
+import mekanism.client.nei.*;
 import mekanism.common.IFactory;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine;
@@ -10,11 +12,12 @@ import mekanism.common.item.*;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import trks.recipedoc.api.API;
+import trks.recipedoc.api.IDocModSupport;
+import trks.recipedoc.api.IRecipeHandlerMachineRegistrar;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
-import trks.recipedoc.modsupport.API;
-import trks.recipedoc.modsupport.IDocModSupport;
 import universalelectricity.core.item.IItemElectric;
 
 import java.util.Arrays;
@@ -44,7 +47,7 @@ public class MekanismSupport implements IDocModSupport
     }
 
     @Override
-    public void correctItemStruct(ItemStruct itemStruct)
+    public void correctItemStruct(ItemStruct itemStruct, IRecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar)
     {
         ItemStack itemStack = itemStruct.getSourceItemStack();
 
@@ -65,11 +68,22 @@ public class MekanismSupport implements IDocModSupport
         }
         addAttributes(itemStack, itemStruct);
         fixMachinesNameAndDescription(itemStruct);
-        if (itemStack.getItem() instanceof ItemEnergized && itemStack.getItemDamage() == 100)
+        if ((itemStack.getItem() instanceof ItemEnergized || itemStack.getItem() instanceof ItemBlockEnergyCube) && itemStack.getItemDamage() == 100)
         {
             itemStruct.showOnList = false;
+            itemStruct.damage = -1;
         }
-        itemStruct.damage = getOverwrittenItemDamage(itemStack);
+        else
+        {
+            itemStruct.damage = getOverwrittenItemDamage(itemStack);
+        }
+
+        RecipeTypes machineRecipeType = getMachineRecipeType(itemStack);
+        if (machineRecipeType != null)
+        {
+            recipeHandlerMachineRegistrar.registerRecipeHandlerMachine(machineRecipeType.getCraftingHandler(), itemStruct.id, itemStruct.damage);
+            itemStruct.attributes.put("Machine action", machineRecipeType.getDescription());
+        }
     }
 
     @Override
@@ -103,6 +117,7 @@ public class MekanismSupport implements IDocModSupport
     }
 
     protected HashSet<String> foundElectricRecipeHashes = new HashSet<String>();
+
     @Override
     public void correctRecipeStruct(RecipeStruct recipeStruct, ICraftingHandler handler)
     {
@@ -120,18 +135,99 @@ public class MekanismSupport implements IDocModSupport
         }
     }
 
-    protected String getMachineRecipeTypeName(ItemStack itemStack)
+    protected IFactory.RecipeType getFactoryRecipeType(ItemStack itemStack)
     {
-        if (!(itemStack.getItem() instanceof ItemBlockMachine))
+        if (!isTypeFactory(itemStack))
         {
             throw new RuntimeException("!");
         }
-        return IFactory.RecipeType.values()[((ItemBlockMachine) itemStack.getItem()).getRecipeType(itemStack)].getName();
+        return IFactory.RecipeType.values()[((ItemBlockMachine) itemStack.getItem()).getRecipeType(itemStack)];
+    }
+
+    protected Boolean isTypeFactory(ItemStack itemStack)
+    {
+        return itemStack.getItem() instanceof ItemBlockMachine && isTypeFactory(BlockMachine.MachineType.get(itemStack));
     }
 
     protected Boolean isTypeFactory(BlockMachine.MachineType machineType)
     {
         return machineType == BlockMachine.MachineType.BASIC_FACTORY || machineType == BlockMachine.MachineType.ADVANCED_FACTORY || machineType == BlockMachine.MachineType.ELITE_FACTORY;
+    }
+
+    protected enum RecipeTypes
+    {
+        ENRICHING(EnrichmentChamberRecipeHandler.class, "enriching"),
+        COMPRESSING(OsmiumCompressorRecipeHandler.class, "compressing"),
+        SMELTING(FurnaceRecipeHandler.class, "smelting"),
+        COMBINING(CombinerRecipeHandler.class, "combining"),
+        CRUSHING(CrusherRecipeHandler.class, "crushing"),
+        PURIFYING(PurificationChamberRecipeHandler.class, "purifying"),
+        INFUSING(MetallurgicInfuserRecipeHandler.class, "infusing");
+
+        Class craftingHandler;
+        String description;
+
+        RecipeTypes(Class craftingHandler, String description)
+        {
+            this.craftingHandler = craftingHandler;
+            this.description = description;
+        }
+
+        public Class getCraftingHandler()
+        {
+            return craftingHandler;
+        }
+
+        public String getDescription()
+        {
+            return description;
+        }
+    }
+
+    protected RecipeTypes getMachineRecipeType(ItemStack itemStack)
+    {
+        if (itemStack.getItem() instanceof ItemBlockMachine)
+        {
+            if (isTypeFactory(itemStack))
+            {
+                switch (getFactoryRecipeType(itemStack))
+                {
+                    case SMELTING:
+                        return RecipeTypes.SMELTING;
+                    case ENRICHING:
+                        return RecipeTypes.ENRICHING;
+                    case CRUSHING:
+                        return RecipeTypes.CRUSHING;
+                    case COMPRESSING:
+                        return RecipeTypes.COMPRESSING;
+                    case COMBINING:
+                        return RecipeTypes.COMBINING;
+                    case PURIFYING:
+                        return RecipeTypes.PURIFYING;
+                }
+            }
+            else
+            {
+                switch (BlockMachine.MachineType.get(itemStack))
+                {
+                    case ENRICHMENT_CHAMBER:
+                        return RecipeTypes.ENRICHING;
+                    case OSMIUM_COMPRESSOR:
+                        return RecipeTypes.COMPRESSING;
+                    case COMBINER:
+                        return RecipeTypes.COMBINING;
+                    case CRUSHER:
+                        return RecipeTypes.CRUSHING;
+                    case METALLURGIC_INFUSER:
+                        return RecipeTypes.INFUSING;
+                    case PURIFICATION_CHAMBER:
+                        return RecipeTypes.PURIFYING;
+                    case ENERGIZED_SMELTER:
+                        return RecipeTypes.SMELTING;
+                }
+            }
+        }
+        return null;
     }
 
     protected void fixMachinesNameAndDescription(ItemStruct itemStruct)
@@ -142,8 +238,7 @@ public class MekanismSupport implements IDocModSupport
             BlockMachine.MachineType type = BlockMachine.MachineType.get(itemStack);
             if (isTypeFactory(type))
             {
-                itemStruct.name += " (" + getMachineRecipeTypeName(itemStack) + ")";
-                itemStruct.attributes.put("Machine type", getMachineRecipeTypeName(itemStack));
+                itemStruct.name += " (" + getFactoryRecipeType(itemStack).getName() + ")";
             }
             itemStruct.description = type.getDescription().replaceAll("!n", "");
         }
@@ -237,30 +332,34 @@ public class MekanismSupport implements IDocModSupport
 
     protected void addAttributes(ItemStack itemStack, ItemStruct itemStruct)
     {
+        if (itemStruct.description == null)
+        {
+            itemStruct.description = "";
+        }
         if (itemStack.getItem() instanceof ItemBlockTransmitter)
         {
-            if(itemStack.getItemDamage() == 0)
+            if (itemStack.getItemDamage() == 0)
             {
                 itemStruct.attributes.put("Transfers", "Oxygen, Hydrogen");
             }
-            else if(itemStack.getItemDamage() == 1)
+            else if (itemStack.getItemDamage() == 1)
             {
                 itemStruct.attributes.put("Transfers", "RF (ThermalExpansion), EU (IndustrialCraft), MJ (BuildCraft), Joules (Mekanism, UE)");
             }
-            else if(itemStack.getItemDamage() == 2)
+            else if (itemStack.getItemDamage() == 2)
             {
                 itemStruct.attributes.put("Transfers", "mB (FluidRegistry)");
             }
-            else if(itemStack.getItemDamage() == 3)
+            else if (itemStack.getItemDamage() == 3)
             {
                 itemStruct.attributes.put("Transfers", "Items, Blocks");
             }
-            else if(itemStack.getItemDamage() == 4)
+            else if (itemStack.getItemDamage() == 4)
             {
                 itemStruct.attributes.put("Transfers", "Items, Blocks");
                 itemStruct.description += "Only used if no other paths available";
             }
-            else if(itemStack.getItemDamage() == 5)
+            else if (itemStack.getItemDamage() == 5)
             {
                 itemStruct.attributes.put("Transfers", "Items, Blocks");
                 itemStruct.description += "Controllable by redstone";

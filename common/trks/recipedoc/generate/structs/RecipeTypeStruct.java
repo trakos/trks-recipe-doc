@@ -1,18 +1,45 @@
 package trks.recipedoc.generate.structs;
 
-/**
- * Created by trakos on 20.01.14.
- */
+import codechicken.nei.recipe.FurnaceRecipeHandler;
+import codechicken.nei.recipe.ICraftingHandler;
+import codechicken.nei.recipe.ShapedRecipeHandler;
+import codechicken.nei.recipe.ShapelessRecipeHandler;
+import trks.recipedoc.generate.renderers.utils.RecipeBackgroundRenderer;
+
+import java.util.HashSet;
+
 public class RecipeTypeStruct
 {
     public String typeId;
     public String name;
     public String image;
+    public HashSet<RecipeTypeMachineIdStruct> machines = new HashSet<RecipeTypeMachineIdStruct>();
 
-    public RecipeTypeStruct(String typeId, String name, String image)
+    public ICraftingHandler getCraftingHandler()
     {
-        this.typeId = typeId;
-        this.name = name;
-        this.image = image;
+        return craftingHandler;
+    }
+
+    protected final ICraftingHandler craftingHandler;
+    public RecipeTypeStruct(ICraftingHandler recipeHandler)
+    {
+        this.craftingHandler = recipeHandler;
+        this.typeId = recipeHandler.getRecipeName();
+        this.name = recipeHandler.getRecipeName();
+        this.image = RecipeBackgroundRenderer.getRecipeHandlerImageName(recipeHandler);
+
+        if (recipeHandler instanceof FurnaceRecipeHandler)
+        {
+            registerMachineHandling(61, 0);
+        }
+        if (recipeHandler instanceof ShapelessRecipeHandler || recipeHandler instanceof ShapedRecipeHandler)
+        {
+            registerMachineHandling(58, 0);
+        }
+    }
+
+    public void registerMachineHandling(int itemId, int damageId)
+    {
+        machines.add(new RecipeTypeMachineIdStruct(itemId, damageId));
     }
 }

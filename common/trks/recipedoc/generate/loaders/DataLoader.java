@@ -10,36 +10,33 @@ import cpw.mods.fml.common.registry.ItemData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import trks.recipedoc.generate.renderers.utils.RecipeBackgroundRenderer;
+import trks.recipedoc.api.API;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 import trks.recipedoc.generate.structs.RecipeTypeStruct;
-import trks.recipedoc.modsupport.API;
 import trks.recipedoc.modsupport.ModSupportHandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class DataLoader
 {
-    public static boolean ready;
-
-    static public ArrayList<ItemStruct> items;
-    static public ArrayList<RecipeStruct> recipes;
-    static public ArrayList<RecipeTypeStruct> recipeHandlers;
-    static public ArrayList<String> categories;
 
     static protected HashMap<Integer, ItemData> itemDataMap;
-
-    static public String getItemModId(int itemID)
+    public static String getItemModId(int itemID)
     {
+        if (itemDataMap == null)
+        {
+            loadModsData();
+        }
         return itemDataMap.get(itemID).getModId();
     }
 
-
-    static protected void loadModsData()
+    protected static void loadModsData()
     {
+        if (itemDataMap != null) return;
         itemDataMap = new HashMap<Integer, ItemData>();
 
         NBTTagList itemDataList = new NBTTagList();
@@ -51,10 +48,33 @@ public class DataLoader
         }
     }
 
-    static public void load()
-    {
-        loadModsData();
 
+    static protected ArrayList<RecipeTypeStruct> recipeHandlersList = null;
+    static public Collection<RecipeTypeStruct> getRecipeHandlers()
+    {
+        if (recipeHandlersList == null)
+        {
+            recipeHandlersList = loadRecipeHandlers(DataNEIFetcher.getActiveCraftingHandlers());
+        }
+        return recipeHandlersList;
+    }
+
+    static protected ArrayList<RecipeTypeStruct> loadRecipeHandlers(ArrayList<ICraftingHandler> activeCraftingHandlers)
+    {
+        ArrayList<RecipeTypeStruct> recipeHandlers = new ArrayList<RecipeTypeStruct>();
+        for (ICraftingHandler recipeHandler : activeCraftingHandlers)
+        {
+            recipeHandlers.add(new RecipeTypeStruct(recipeHandler));
+        }
+        return recipeHandlers;
+    }
+
+    public ArrayList<ItemStruct> items;
+    public ArrayList<RecipeStruct> recipes;
+    public ArrayList<String> categories;
+
+    public DataLoader()
+    {
         items = new ArrayList<ItemStruct>();
         recipes = new ArrayList<RecipeStruct>();
         for (ItemStack item : DataNEIFetcher.getItems())
@@ -62,21 +82,10 @@ public class DataLoader
             items.add(ModSupportHandler.correctItemStruct(new ItemStruct(item)));
             recipes.addAll(loadRecipesByTarget(item));
         }
-        recipeHandlers = loadRecipeHandlers(DataNEIFetcher.getActiveCraftingHandlers());
         categories = getItemCategories();
     }
 
-    private static ArrayList<RecipeTypeStruct> loadRecipeHandlers(ArrayList<ICraftingHandler> activeCraftingHandlers)
-    {
-        ArrayList<RecipeTypeStruct> recipeHandlers = new ArrayList<RecipeTypeStruct>();
-        for (ICraftingHandler recipeHandler : activeCraftingHandlers)
-        {
-            recipeHandlers.add(new RecipeTypeStruct(recipeHandler.getRecipeName(), recipeHandler.getRecipeName(), RecipeBackgroundRenderer.getRecipeHandlerImageName(recipeHandler)));
-        }
-        return recipeHandlers;
-    }
-
-    protected static ArrayList<String> getItemCategories()
+    protected ArrayList<String> getItemCategories()
     {
         HashMap<String, Float> temporaryCategories = new HashMap<String, Float>();
         temporaryCategories.put(API.STANDARD_CATEGORY_ITEMS, 10f);
@@ -91,7 +100,7 @@ public class DataLoader
         return new ArrayList<String>(ImmutableSortedMap.copyOf(temporaryCategories, Ordering.natural().onResultOf(Functions.forMap(temporaryCategories)).compound((Comparator)Ordering.natural())).keySet());
     }
 
-    static protected ArrayList<RecipeStruct> loadRecipesByTarget(ItemStack itemStack)
+    protected ArrayList<RecipeStruct> loadRecipesByTarget(ItemStack itemStack)
     {
         ArrayList<RecipeStruct> recipes = new ArrayList<RecipeStruct>();
         for (ICraftingHandler craftingHandler : GuiCraftingRecipe.craftinghandlers)

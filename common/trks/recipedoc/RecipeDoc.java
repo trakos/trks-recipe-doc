@@ -10,8 +10,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.common.MinecraftForge;
-import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.client.TickHandler;
 
 @Mod(modid = "TrksRecipeDocId", name = "TrksRecipeDoc", version = "0.0.1", dependencies = "after:Mekanism")
@@ -39,7 +37,6 @@ public class RecipeDoc
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(new DataLoader());
     }
 
 

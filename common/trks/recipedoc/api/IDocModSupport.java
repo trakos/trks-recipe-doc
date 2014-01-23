@@ -1,4 +1,4 @@
-package trks.recipedoc.modsupport;
+package trks.recipedoc.api;
 import codechicken.nei.recipe.ICraftingHandler;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
@@ -22,7 +22,7 @@ public interface IDocModSupport
      *                   and adding new attributes;
      *                   don't forget to register all added categories through getNewCategorie smethod
      */
-    public void correctItemStruct(ItemStruct itemStruct);
+    public void correctItemStruct(ItemStruct itemStruct, IRecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar);
 
     /**
      * @return List of mods which have to be loaded - otherwise, this class won't be used

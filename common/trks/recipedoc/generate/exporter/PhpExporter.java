@@ -1,16 +1,12 @@
 package trks.recipedoc.generate.exporter;
 
 import com.google.common.collect.ImmutableMap;
-import trks.recipedoc.generate.structs.ItemStruct;
-import trks.recipedoc.generate.structs.RecipeItemStruct;
-import trks.recipedoc.generate.structs.RecipeStruct;
-import trks.recipedoc.generate.structs.RecipeTypeStruct;
+import trks.recipedoc.generate.structs.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class PhpExporter extends PrintWriter
@@ -99,7 +95,7 @@ public class PhpExporter extends PrintWriter
     }
 
 
-    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
+    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, Collection<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
     {
         try
         {
@@ -145,6 +141,7 @@ public class PhpExporter extends PrintWriter
                     .put("id", "string")
                     .put("name", "string")
                     .put("image", "string")
+                    .put("machines", "ItemId[]")
                     .build());
 
             writer.printlnAndIndent("return new RecipeDocData(array(");
@@ -225,6 +222,17 @@ public class PhpExporter extends PrintWriter
                         writer.printArrayAssign("id", recipeType.typeId);
                         writer.printArrayAssign("name", recipeType.name);
                         writer.printArrayAssign("image", recipeType.image);
+                        writer.printlnAndIndent("'machines' => array(");
+                        for (RecipeTypeMachineIdStruct machine : recipeType.machines)
+                        {
+                            writer.printlnAndIndent("new ItemId(array(");
+                            {
+                                writer.printArrayAssign("id", machine.itemId);
+                                writer.printArrayAssign("damage", machine.damageId);
+                            }
+                            writer.undoIndentAndPrintln(")),");
+                        }
+                        writer.undoIndentAndPrintln("),");
                     }
                     writer.undoIndentAndPrintln(")),");
                 }

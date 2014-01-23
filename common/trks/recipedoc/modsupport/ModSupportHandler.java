@@ -2,17 +2,25 @@ package trks.recipedoc.modsupport;
 
 import codechicken.nei.recipe.ICraftingHandler;
 import cpw.mods.fml.common.Loader;
+import trks.recipedoc.api.API;
+import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
+import trks.recipedoc.modsupport.mods.MekanismSupport;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ModSupportHandler
 {
+    static
+    {
+        API.registerModSupport(new MekanismSupport());
+    }
 
     static protected boolean unloadedModsRemoved = false;
     static protected void removeUnloadedModsSupport()
@@ -43,6 +51,7 @@ public class ModSupportHandler
         unloadedModsRemoved = true;
     }
 
+    static protected RecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar = new RecipeHandlerMachineRegistrar();
     static public ItemStruct correctItemStruct(ItemStruct itemStruct)
     {
         removeUnloadedModsSupport();
@@ -51,7 +60,7 @@ public class ModSupportHandler
         {
             if (docModSupport.shouldCorrectItemFromMod(modOrigin))
             {
-                docModSupport.correctItemStruct(itemStruct);
+                docModSupport.correctItemStruct(itemStruct, recipeHandlerMachineRegistrar);
             }
         }
         return itemStruct;
@@ -61,7 +70,11 @@ public class ModSupportHandler
     {
         for (IDocModSupport docModSupport : API.docModSupports)
         {
-            categories.putAll(docModSupport.getNewCategories());
+            Map<String,Float> newCategories = docModSupport.getNewCategories();
+            if (newCategories != null)
+            {
+                categories.putAll(newCategories);
+            }
         }
     }
 

@@ -1,13 +1,9 @@
 package trks.recipedoc.generate.exporter;
 
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import trks.recipedoc.generate.structs.ItemStruct;
-import trks.recipedoc.generate.structs.RecipeItemStruct;
-import trks.recipedoc.generate.structs.RecipeStruct;
-import trks.recipedoc.generate.structs.RecipeTypeStruct;
+import trks.recipedoc.generate.structs.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,12 +12,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class XmlExporter
 {
-    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, ArrayList<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
+    static public void export(Collection<ItemStruct> items, Collection<RecipeStruct> recipes, Collection<RecipeTypeStruct> recipeHandlers, Collection<String> itemCategories, File target)
     {
         try
         {
@@ -104,6 +99,15 @@ public class XmlExporter
                 itemElement.setAttribute("id", recipeType.typeId);
                 itemElement.setAttribute("name", recipeType.name);
                 itemElement.setAttribute("image", recipeType.image);
+
+                for (RecipeTypeMachineIdStruct recipeMachineId : recipeType.machines)
+                {
+                    Element machineElement = doc.createElement("machine");
+                    itemElement.appendChild(machineElement);
+
+                    machineElement.setAttribute("id", Integer.toString(recipeMachineId.itemId));
+                    machineElement.setAttribute("damage", Integer.toString(recipeMachineId.damageId));
+                }
             }
 
             Element itemCategoriesElement = doc.createElement("itemCategories");

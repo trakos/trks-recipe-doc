@@ -40,7 +40,7 @@ public class DataNEIFetcher
     {
         ArrayList<ICraftingHandler> foundHandlers = new ArrayList<ICraftingHandler>();
         ArrayList<ICraftingHandler> remainingHandlers = new ArrayList<ICraftingHandler>(GuiCraftingRecipe.craftinghandlers);
-        for (ItemStack item : ItemList.items)
+        for (ItemStack item : getItems())
         {
             Iterator<ICraftingHandler> craftingHandlerIterator = remainingHandlers.iterator();
             while (craftingHandlerIterator.hasNext())
@@ -58,6 +58,7 @@ public class DataNEIFetcher
                 break;
             }
         }
+        if (foundHandlers.isEmpty()) throw new RuntimeException("No recipe handlers found; called too early?");
         return foundHandlers;
     }
 

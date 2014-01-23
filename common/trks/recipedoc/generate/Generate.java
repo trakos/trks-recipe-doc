@@ -3,7 +3,6 @@ package trks.recipedoc.generate;
 import trks.recipedoc.generate.exporter.PhpExporter;
 import trks.recipedoc.generate.exporter.XmlExporter;
 import trks.recipedoc.generate.loaders.DataLoader;
-import trks.recipedoc.generate.renderers.DataRenderer;
 
 import java.io.File;
 
@@ -40,10 +39,10 @@ public class Generate
     static public void generate()
     {
         init();
-        DataLoader.load();
-        DataRenderer.render(DataLoader.items);
+        DataLoader dataLoader = new DataLoader();
+        //DataRenderer.render(DataLoader.items);
 
-        XmlExporter.export(DataLoader.items, DataLoader.recipes, DataLoader.recipeHandlers, DataLoader.categories, new File(xmlFile));
-        PhpExporter.export(DataLoader.items, DataLoader.recipes, DataLoader.recipeHandlers, DataLoader.categories, new File(phpFile));
+        XmlExporter.export(dataLoader.items, dataLoader.recipes, DataLoader.getRecipeHandlers(), dataLoader.categories, new File(xmlFile));
+        PhpExporter.export(dataLoader.items, dataLoader.recipes, DataLoader.getRecipeHandlers(), dataLoader.categories, new File(phpFile));
     }
 }
