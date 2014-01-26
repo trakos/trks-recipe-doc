@@ -25,6 +25,16 @@ public interface IDocModSupport
     public void correctItemStruct(ItemStruct itemStruct, IRecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar);
 
     /**
+     * Whether this item is treated as a most basic item, that cannot be crafted
+     * (or is easier to find than craft)
+     * Note: when more than one mod supports checks the same item, it's sufficient for only one of them to return true
+     *
+     * @param itemStruct item to check
+     * @return whether it is base (true)
+     */
+    public boolean isBaseItem(ItemStruct itemStruct);
+
+    /**
      * @return List of mods which have to be loaded - otherwise, this class won't be used
      */
     public Collection<String> getModsRequiredToBeLoaded();

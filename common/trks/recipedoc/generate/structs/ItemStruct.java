@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
+import trks.recipedoc.api.API;
 import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.generate.loaders.DataNEIFetcher;
 
@@ -32,6 +33,10 @@ public class ItemStruct
      */
     public String category;
     public boolean showOnList;
+    /**
+     * whether it is uncraftable item
+     */
+    public boolean isBaseItem;
 
     public ItemStruct(ItemStack itemStack)
     {
@@ -80,27 +85,39 @@ public class ItemStruct
     {
         if (type.startsWith("Items.Tools"))
         {
-            return "Items";
+            return API.STANDARD_CATEGORY_ITEMS;
         }
         else if (type.startsWith("Items.Weapons"))
         {
-            return "Weapons";
+            return API.STANDARD_CATEGORY_WEAPONS;
         }
         else if (type.startsWith("Items.Armor"))
         {
-            return "Armor";
+            return API.STANDARD_CATEGORY_ARMOR;
         }
         else if (type.startsWith("Items.Food"))
         {
-            return "Food";
+            return API.STANDARD_CATEGORY_FOOD;
         }
-        else if (type.startsWith("Blocks.Regular"))
+        else if (type.startsWith("Blocks.Wood"))
         {
-            return "Blocks";
+            return API.STANDARD_CATEGORY_WOOD;
+        }
+        else if (type.startsWith("Blocks.Internal") || type.startsWith("Items.Internal") || type.startsWith("Blocks.MobSpawners"))
+        {
+            return API.STANDARD_CATEGORY_INTERNAL;
+        }
+        else if (type.startsWith("Blocks."))
+        {
+            return API.STANDARD_CATEGORY_BLOCKS;
+        }
+        else if (type.startsWith("Items.Potions"))
+        {
+            return API.STANDARD_CATEGORY_POTIONS;
         }
         else
         {
-            return "Other";
+            return API.STANDARD_CATEGORY_OTHER;
         }
     }
 

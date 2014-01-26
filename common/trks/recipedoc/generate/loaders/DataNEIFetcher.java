@@ -82,6 +82,27 @@ public class DataNEIFetcher
             }
             else
             {
+                if (item instanceof ItemBlock)
+                {
+                    int blockId = ((ItemBlock) item).getBlockID();
+                    if (blockId == Block.endPortal.blockID
+                        || blockId == Block.endPortalFrame.blockID
+                        || blockId == Block.fire.blockID
+                        || blockId == Block.lavaMoving.blockID
+                        || blockId == Block.lavaStill.blockID)
+                    {
+                        return "Blocks.Internal";
+                    }
+                    else if (blockId == Block.wood.blockID
+                             || blockId == Block.planks.blockID
+                             || blockId == Block.stairsWoodBirch.blockID
+                             || blockId == Block.stairsWoodJungle.blockID
+                             || blockId == Block.stairsWoodOak.blockID
+                             || blockId == Block.stairsWoodSpruce.blockID)
+                    {
+                        return "Blocks.Wood";
+                    }
+                }
                 return "Blocks.Regular";
             }
         }
@@ -141,6 +162,11 @@ public class DataNEIFetcher
             if (item instanceof ItemPotion)
             {
                 return "Items.Potions";
+            }
+
+            if (item instanceof ItemMonsterPlacer)
+            {
+                return "Items.Internal";
             }
 
             return "Items.Other";

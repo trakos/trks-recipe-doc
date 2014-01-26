@@ -10,7 +10,6 @@ import cpw.mods.fml.common.registry.ItemData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import trks.recipedoc.api.API;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 import trks.recipedoc.generate.structs.RecipeTypeStruct;
@@ -88,12 +87,6 @@ public class DataLoader
     protected ArrayList<String> getItemCategories()
     {
         HashMap<String, Float> temporaryCategories = new HashMap<String, Float>();
-        temporaryCategories.put(API.STANDARD_CATEGORY_ITEMS, 10f);
-        temporaryCategories.put(API.STANDARD_CATEGORY_WEAPONS, 30f);
-        temporaryCategories.put(API.STANDARD_CATEGORY_ARMOR, 30f);
-        temporaryCategories.put(API.STANDARD_CATEGORY_FOOD, 40f);
-        temporaryCategories.put(API.STANDARD_CATEGORY_BLOCKS, 50f);
-        temporaryCategories.put(API.STANDARD_CATEGORY_OTHER, 100f);
         ModSupportHandler.fillCategories(temporaryCategories);
         // sorts categories by value and put it into this order into categories list
         //noinspection unchecked

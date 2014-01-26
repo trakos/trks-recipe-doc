@@ -43,6 +43,7 @@ public class XmlExporter
                 itemElement.setAttribute("type", item.type);
                 itemElement.setAttribute("category", item.category);
                 itemElement.setAttribute("showOnList", item.showOnList ? "1" : "0");
+                itemElement.setAttribute("isBaseItem", item.isBaseItem ? "1" : "0");
                 itemElement.setAttribute("tooltip", StringUtils.join(item.tooltipDescription, "; "));
 
                 for (String key : item.attributes.keySet())

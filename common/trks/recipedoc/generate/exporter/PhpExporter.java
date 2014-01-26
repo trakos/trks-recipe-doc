@@ -120,6 +120,7 @@ public class PhpExporter extends PrintWriter
                     .put("description", "string")
                     .put("attributes", "string[]")
                     .put("showOnList", "bool")
+                    .put("isBaseItem", "bool")
                     .build());
             writer.printClass("ItemId", (new ImmutableMap.Builder<String, String>())
                     .put("id", "int")
@@ -160,6 +161,7 @@ public class PhpExporter extends PrintWriter
                         writer.printArrayAssign("category", item.category);
                         writer.printArrayAssign("description", item.description);
                         writer.printArrayAssign("showOnList", item.showOnList);
+                        writer.printArrayAssign("isBaseItem", item.isBaseItem);
                         writer.printlnAndIndent("'attributes' => array(");
                         for (String key : item.attributes.keySet())
                         {

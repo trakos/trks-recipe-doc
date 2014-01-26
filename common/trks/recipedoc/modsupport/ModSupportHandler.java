@@ -9,6 +9,7 @@ import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 import trks.recipedoc.modsupport.mods.MekanismSupport;
+import trks.recipedoc.modsupport.mods.VanillaSupport;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class ModSupportHandler
 {
     static
     {
+        API.registerModSupport(new VanillaSupport());
         API.registerModSupport(new MekanismSupport());
     }
 
@@ -60,6 +62,7 @@ public class ModSupportHandler
         {
             if (docModSupport.shouldCorrectItemFromMod(modOrigin))
             {
+                itemStruct.isBaseItem = itemStruct.isBaseItem || docModSupport.isBaseItem(itemStruct);
                 docModSupport.correctItemStruct(itemStruct, recipeHandlerMachineRegistrar);
             }
         }

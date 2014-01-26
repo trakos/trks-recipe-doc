@@ -31,7 +31,6 @@ public class MekanismSupport implements IDocModSupport
     static final String CATEGORY_MACHINES = "Machines";
     static final String CATEGORY_DUSTS_CLAMPS = "Dusts & Clamps";
     static final String CATEGORY_INGOTS = "Ingots";
-    static final String CATEGORY_ORES = "Ores";
     static final String CATEGORY_INDUCTION = "Induction";
     static final String CATEGORY_GENERATORS = "Generators";
     static final String CATEGORY_UPGRADES = "Machine Upgrades";
@@ -87,6 +86,12 @@ public class MekanismSupport implements IDocModSupport
     }
 
     @Override
+    public boolean isBaseItem(ItemStruct itemStruct)
+    {
+        return itemStruct.name.endsWith(" Ore");
+    }
+
+    @Override
     public Collection<String> getModsRequiredToBeLoaded()
     {
         return Arrays.asList("Mekanism");
@@ -106,7 +111,6 @@ public class MekanismSupport implements IDocModSupport
                 .put(CATEGORY_PIPES_CABLES, .555f)
                 .put(CATEGORY_DUSTS_CLAMPS, .56f)
                 .put(CATEGORY_INGOTS, .57f)
-                .put(CATEGORY_ORES, .58f)
                 .build();
     }
 
@@ -318,7 +322,7 @@ public class MekanismSupport implements IDocModSupport
         }
         else if (item instanceof ItemBlockOre)
         {
-            itemStruct.category = CATEGORY_ORES;
+            itemStruct.category = API.STANDARD_CATEGORY_ORE;
         }
         else if (item instanceof ItemMachineUpgrade)
         {
