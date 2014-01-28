@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class PhpExporter extends PrintWriter
 {
@@ -54,6 +55,11 @@ public class PhpExporter extends PrintWriter
     public void printArrayAssign(String key, int value)
     {
         printArrayAssign(key, Integer.toString(value));
+    }
+
+    public void printArrayAssign(String key, float value)
+    {
+        printArrayAssign(key, Float.toString(value));
     }
 
     public void printArrayAssign(String key, boolean value)
@@ -121,6 +127,15 @@ public class PhpExporter extends PrintWriter
                     .put("attributes", "string[]")
                     .put("showOnList", "bool")
                     .put("isBaseItem", "bool")
+                    .put("rawCost", "ItemRawCost[]")
+                    .build());
+            writer.printClass("ItemRawCost", (new ImmutableMap.Builder<String, String>())
+                    .put("items", "ItemRawCostEntry[]")
+                    .build());
+            writer.printClass("ItemRawCostEntry", (new ImmutableMap.Builder<String, String>())
+                    .put("id", "int")
+                    .put("damage", "int")
+                    .put("amount", "float")
                     .build());
             writer.printClass("ItemId", (new ImmutableMap.Builder<String, String>())
                     .put("id", "int")
@@ -171,6 +186,26 @@ public class PhpExporter extends PrintWriter
                                 writer.printArrayAssign("value", item.attributes.get(key));
                             }
                             writer.undoIndentAndPrintln("),");
+                        }
+                        writer.undoIndentAndPrintln("),");
+                        writer.printlnAndIndent("'rawCost' => array(");
+                        for (HashMap<IdDamagePair, Float> rawCost : item.rawCosts)
+                        {
+                            writer.printlnAndIndent("new ItemRawCost('items' => array(");
+                            {
+                                for (IdDamagePair idDamagePair : rawCost.keySet())
+                                {
+                                    float amount = (float)rawCost.get(idDamagePair);
+                                    writer.printlnAndIndent("new ItemRawCostEntry(array(");
+                                    {
+                                        writer.printArrayAssign("id", idDamagePair.itemId);
+                                        writer.printArrayAssign("damage", idDamagePair.damageId);
+                                        writer.printArrayAssign("amount", amount);
+                                    }
+                                    writer.undoIndentAndPrintln(")),");
+                                }
+                            }
+                            writer.undoIndentAndPrintln(")),");
                         }
                         writer.undoIndentAndPrintln("),");
                     }

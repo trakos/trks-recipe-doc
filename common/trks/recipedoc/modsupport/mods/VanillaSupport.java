@@ -1,6 +1,7 @@
 package trks.recipedoc.modsupport.mods;
 
 import codechicken.nei.ItemMobSpawner;
+import codechicken.nei.recipe.FireworkRecipeHandler;
 import codechicken.nei.recipe.ICraftingHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
@@ -53,79 +54,22 @@ public class VanillaSupport implements IDocModSupport
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        int itemId = itemStruct.getItemStack().itemID;
-        if (isRawFood(itemStruct)
-                || isBaseBlock(itemStruct)
-                || isPlantBlock(itemStruct)
-                || isWood(itemStruct)
-                || isWool(itemStruct)
-                || isSpawner(itemStruct)
-                || isPlantRawDye(itemStruct)
-                || isNonPlantRawDye(itemStruct)
-                || isPlantDrop(itemStruct))
-        {
-            if (itemId == Block.obsidian.blockID
-                || itemId == Block.glowStone.blockID
-                    || isNonPlantRawDye(itemStruct))
-            {
-                if (itemStruct.getItemStack().itemID == Item.dyePowder.itemID)
-                {
-                    String colorName = ItemDye.dyeColorNames[MathHelper.clamp_int(itemStruct.getItemStack().getItemDamage(), 0, 15)];
-                    if (colorName.equals("blue"))
-                    {
-                        // lapis lazuli
-                        itemStruct.itemCost = 48f;
-                    }
-                }
-                itemStruct.itemCost = 16f;
-            }
-            itemStruct.itemCost = 1f;
-            return true;
-        }
-        else if (isHeadOrSkull(itemStruct)
-                || isMobDrop(itemStruct)
-                || isBucket(itemStruct))
-        {
-            itemStruct.itemCost = 8f;
-            return true;
-        }
-        else if (isExclusiveDungeonLoot(itemStruct))
-        {
-            itemStruct.itemCost = 64f;
-            return true;
-        }
-        else if (isOre(itemStruct)
-                || isBreakableBlockDrop(itemStruct))
-        {
-            if (itemId == Item.coal.itemID)
-            {
-                itemStruct.itemCost = 4f;
-            }
-            else if (itemId == Block.oreIron.blockID || itemId == Block.oreNetherQuartz.blockID || itemId == Item.redstone.itemID)
-            {
-                itemStruct.itemCost = 8f;
-            }
-            else if (itemId == Block.oreGold.blockID)
-            {
-                itemStruct.itemCost = 32f;
-            }
-            else if (itemId == Item.diamond.itemID || itemId == Item.emerald.itemID)
-            {
-                itemStruct.itemCost = 256f;
-            }
-            else if (itemId == Block.oreCoal.blockID || itemId == Block.oreLapis.blockID || itemId == Block.oreRedstone.blockID || itemId == Block.oreDiamond.blockID || itemId == Block.oreEmerald.blockID)
-            {
-                // needs silk touch to obtain
-                itemStruct.itemCost = 1000f;
-            }
-            else
-            {
-                // flint, snowball, glowstone, clay
-                itemStruct.itemCost = 4f;
-            }
-            return true;
-        }
-        return false;
+        return isOre(itemStruct)
+               || isIngot(itemStruct)
+               || isRawFood(itemStruct)
+               || isBaseBlock(itemStruct)
+               || isPlantBlock(itemStruct)
+               || isWool(itemStruct)
+               || isWood(itemStruct)
+               || isBreakableBlockDrop(itemStruct)
+               || isBucket(itemStruct)
+               || isMobDrop(itemStruct)
+               || isExclusiveDungeonLoot(itemStruct)
+               || isSpawner(itemStruct)
+               || isPlantRawDye(itemStruct)
+               || isNonPlantRawDye(itemStruct)
+               || isPlantDrop(itemStruct)
+               || isHeadOrSkull(itemStruct);
     }
 
     @Override
@@ -154,7 +98,10 @@ public class VanillaSupport implements IDocModSupport
     @Override
     public void correctRecipeStruct(RecipeStruct recipeStruct, ICraftingHandler handler)
     {
-
+        if (handler instanceof FireworkRecipeHandler)
+        {
+            recipeStruct.useInRawCostCalculation = false;
+        }
     }
 
     @Override
@@ -271,7 +218,7 @@ public class VanillaSupport implements IDocModSupport
             return false;
         }
         int blockId = ((ItemBlock) itemStruct.getItemStack().getItem()).getBlockID();
-        return blockId == Block.wood.blockID;
+        return blockId == Block.wood.blockID || blockId == Block.planks.blockID;
     }
 
     protected boolean isBreakableBlockDrop(ItemStruct itemStruct)

@@ -12,20 +12,12 @@ import java.util.HashSet;
 
 public class RecipeStruct
 {
-    public enum RecipeMethod
-    {
-        UNIVERSAL,
-        METHOD_A,
-        METHOD_B,
-        METHOD_C
-    }
 
     public Collection<RecipeItemStruct> items;
     public String recipeHandlerName;
     public boolean visible = true;
     public Collection<String> itemMods;
     public boolean useInRawCostCalculation = true;
-    public RecipeMethod recipeMethod = RecipeMethod.UNIVERSAL;
 
     public RecipeStruct(ICraftingHandler craftingHandler, int recipeNumber)
     {

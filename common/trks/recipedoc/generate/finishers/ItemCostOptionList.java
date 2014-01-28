@@ -106,12 +106,6 @@ public class ItemCostOptionList
                     {
                         continue;
                     }
-                    if (ingredientCostOption.recipeMethod != RecipeStruct.RecipeMethod.UNIVERSAL
-                        && resultCostOption.recipeMethod != RecipeStruct.RecipeMethod.UNIVERSAL
-                        && ingredientCostOption.recipeMethod != resultCostOption.recipeMethod)
-                    {
-                        continue;
-                    }
                     ItemCostOption newResultCostOption = resultCostOption.getCloneWithItemCrafted(ingredientItemId, ingredientCostOption);
                     boolean isWorthAdding = true;
                     for (ItemCostOption resultCostOptionToCompare : itemCostOptionList)

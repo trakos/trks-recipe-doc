@@ -11,7 +11,6 @@ import mekanism.common.block.BlockMachine;
 import mekanism.common.item.*;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import trks.recipedoc.api.API;
@@ -162,9 +161,16 @@ public class MekanismSupport implements IDocModSupport
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        return
-                itemStruct.itemId == Item.itemsList[Mekanism.oreBlockID].itemID;
-                //|| itemStruct.getItemStack().getItem() instanceof ItemIngot;
+        return itemStruct.itemId == Item.itemsList[Mekanism.oreBlockID].itemID
+               || (
+                itemStruct.itemId == Mekanism.Ingot.itemID
+                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedObsidian")
+                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedGlowstone")
+        )
+               || (
+                itemStruct.itemId == Mekanism.Dust.itemID
+                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
+        ) || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
     }
 
     @Override
@@ -221,18 +227,6 @@ public class MekanismSupport implements IDocModSupport
             {
                 for (IdDamagePairWithStack itemId : item.itemIds)
                 {
-                    if (itemId.itemId == Mekanism.Clump.itemID)
-                    {
-                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_A;
-                    }
-                    else if (itemId.itemId == Mekanism.oreBlockID
-                             || itemId.itemId == Block.oreIron.blockID
-                             || itemId.itemId == Block.oreGold.blockID
-                             || itemId.itemId == Block.oreEmerald.blockID
-                             || itemId.itemId == Block.oreCoal.blockID)
-                    {
-                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_B;
-                    }
                     if (itemId.itemId == Item.coal.itemID && itemId.damageId != 0)
                     {
                         hasCharcoal = true;
@@ -250,10 +244,6 @@ public class MekanismSupport implements IDocModSupport
             {
                 for (IdDamagePairWithStack itemId : item.itemIds)
                 {
-                    if (itemId.itemId == Mekanism.Clump.itemID)
-                    {
-                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_A;
-                    }
                     if (itemId.itemId == Item.diamond.itemID
                         || itemId.itemId == Mekanism.Clump.itemID
                         || itemId.itemId == MekanismGenerators.BioFuel.itemID)
@@ -265,6 +255,10 @@ public class MekanismSupport implements IDocModSupport
                 if (!ignoreRecipeInCalculation) break;
             }
             recipeStruct.useInRawCostCalculation = !ignoreRecipeInCalculation;
+        }
+        else if (handler instanceof PurificationChamberRecipeHandler)
+        {
+            recipeStruct.useInRawCostCalculation = false;
         }
     }
 

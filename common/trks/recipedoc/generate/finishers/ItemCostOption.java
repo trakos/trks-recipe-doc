@@ -1,8 +1,12 @@
 package trks.recipedoc.generate.finishers;
 
-import trks.recipedoc.generate.structs.*;
+import trks.recipedoc.generate.structs.IdDamagePair;
+import trks.recipedoc.generate.structs.ItemStruct;
+import trks.recipedoc.generate.structs.RecipeItemStruct;
+import trks.recipedoc.generate.structs.RecipeStruct;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ItemCostOption implements Cloneable
 {
@@ -27,7 +31,8 @@ public class ItemCostOption implements Cloneable
     public HashMap<IdDamagePair, IngredientInfo> items = new HashMap<IdDamagePair, IngredientInfo>();
     public boolean areAllItemsBase = false;
     public float resultAmount = 1;
-    public RecipeStruct.RecipeMethod recipeMethod = RecipeStruct.RecipeMethod.UNIVERSAL;
+    public float resultCost = 0;
+    public HashSet<String> craftingHandlers = new HashSet<String>();
 
     protected ItemCostOption()
     {
@@ -36,7 +41,6 @@ public class ItemCostOption implements Cloneable
     public ItemCostOption(RecipeStruct recipeStruct, HashMap<IdDamagePair, ItemStruct> itemStructHashMap)
     {
         areAllItemsBase = true;
-        recipeMethod = recipeStruct.recipeMethod;
         for (RecipeItemStruct ingredient : recipeStruct.items)
         {
             if (ingredient.elementType == RecipeItemStruct.RecipeElementType.result)
@@ -63,15 +67,26 @@ public class ItemCostOption implements Cloneable
                 }
             }
             addIngredient(idDamagePairWithStack, ingredient.amount, itemStructHashMap.get(idDamagePairWithStack).isBaseItem);
+            resultCost += ingredient.amount * itemStructHashMap.get(idDamagePairWithStack).itemCost;
         }
+        craftingHandlers.add(recipeStruct.recipeHandlerName);
         _checkIfBase();
     }
 
     public boolean isThisEqualToOrCheaperThan(ItemCostOption otherOption)
     {
+        for (String craftingHandler : craftingHandlers)
+        {
+            if (!otherOption.craftingHandlers.contains(craftingHandler))
+            {
+                return false;
+            }
+        }
+
+
         for (IdDamagePair idDamagePair : items.keySet())
         {
-            if (!otherOption.hasItem(idDamagePair) || (otherOption.items.get(idDamagePair).amount - .1f) < items.get(idDamagePair).amount)
+            if (!otherOption.hasItem(idDamagePair) || (otherOption.items.get(idDamagePair).amount) < items.get(idDamagePair).amount)
             {
                 return false;
             }
@@ -119,14 +134,6 @@ public class ItemCostOption implements Cloneable
             newCostOption.addIngredient(idDamagePair, ingredientAmount, recipeCost.items.get(idDamagePair).isBaseItem);
         }
         newCostOption._checkIfBase();
-        if (recipeMethod != RecipeStruct.RecipeMethod.UNIVERSAL)
-        {
-            newCostOption.recipeMethod = recipeMethod;
-        }
-        else if (recipeCost.recipeMethod != RecipeStruct.RecipeMethod.UNIVERSAL)
-        {
-            newCostOption.recipeMethod = recipeCost.recipeMethod;
-        }
         return newCostOption;
     }
 

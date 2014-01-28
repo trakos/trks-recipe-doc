@@ -34,6 +34,7 @@ public class ItemStruct extends IdDamagePairWithStack
      */
     public boolean isBaseItem;
     public float craftingComplexity = 10;
+    public float itemCost;
 
     public ItemStruct(ItemStack itemStack)
     {
