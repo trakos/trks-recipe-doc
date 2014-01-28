@@ -5,8 +5,8 @@ import cpw.mods.fml.common.Loader;
 import trks.recipedoc.api.API;
 import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.generate.loaders.DataLoader;
+import trks.recipedoc.generate.structs.IdDamagePairWithStack;
 import trks.recipedoc.generate.structs.ItemStruct;
-import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 import trks.recipedoc.modsupport.mods.MekanismSupport;
 import trks.recipedoc.modsupport.mods.VanillaSupport;
@@ -98,7 +98,7 @@ public class ModSupportHandler
         return recipeStruct;
     }
 
-    public static RecipeItemStruct.RecipeItemIdStruct correctRecipeItemStruct(RecipeItemStruct.RecipeItemIdStruct recipeItemStruct)
+    public static IdDamagePairWithStack correctRecipeItemStruct(IdDamagePairWithStack recipeItemStruct)
     {
         removeUnloadedModsSupport();
         for (IDocModSupport docModSupport : API.docModSupports)

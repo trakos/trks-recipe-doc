@@ -9,8 +9,8 @@ import net.minecraft.util.MathHelper;
 import trks.recipedoc.api.API;
 import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.api.IRecipeHandlerMachineRegistrar;
+import trks.recipedoc.generate.structs.IdDamagePairWithStack;
 import trks.recipedoc.generate.structs.ItemStruct;
-import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 
 import java.util.Collection;
@@ -40,6 +40,14 @@ public class VanillaSupport implements IDocModSupport
         {
             itemStruct.category = API.STANDARD_CATEGORY_ORE;
         }
+        if (isIngot(itemStruct))
+        {
+            itemStruct.craftingComplexity = .5f;
+        }
+        else
+        {
+            itemStruct.craftingComplexity = 1f;
+        }
     }
 
     @Override
@@ -49,6 +57,7 @@ public class VanillaSupport implements IDocModSupport
                || isRawFood(itemStruct)
                || isBaseBlock(itemStruct)
                || isPlantBlock(itemStruct)
+               || isWool(itemStruct)
                || isWood(itemStruct)
                || isBreakableBlockDrop(itemStruct)
                || isBucket(itemStruct)
@@ -57,7 +66,8 @@ public class VanillaSupport implements IDocModSupport
                || isSpawner(itemStruct)
                || isPlantRawDye(itemStruct)
                || isNonPlantRawDye(itemStruct)
-               || isPlantDrop(itemStruct);
+               || isPlantDrop(itemStruct)
+               || isHeadOrSkull(itemStruct);
     }
 
     @Override
@@ -90,18 +100,18 @@ public class VanillaSupport implements IDocModSupport
     }
 
     @Override
-    public void correctRecipeItemStruct(RecipeItemStruct.RecipeItemIdStruct recipeItemStruct)
+    public void correctRecipeItemStruct(IdDamagePairWithStack recipeItemStruct)
     {
 
     }
 
     protected boolean isOre(ItemStruct itemStruct)
     {
-        if (!(itemStruct.getSourceItemStack().getItem() instanceof ItemBlock))
+        if (!(itemStruct.getItemStack().getItem() instanceof ItemBlock))
         {
             return false;
         }
-        int itemId = ((ItemBlock) itemStruct.getSourceItemStack().getItem()).getBlockID();
+        int itemId = ((ItemBlock) itemStruct.getItemStack().getItem()).getBlockID();
         return (
                 itemId == Block.oreCoal.blockID
                 || itemId == Block.oreDiamond.blockID
@@ -112,13 +122,27 @@ public class VanillaSupport implements IDocModSupport
         );
     }
 
+    protected boolean isIngot(ItemStruct itemStruct)
+    {
+        int blockId = itemStruct.getItemStack().itemID;
+        return
+                blockId == Item.ingotGold.itemID
+                || blockId == Item.ingotIron.itemID
+        ;
+    }
+
+    protected boolean isWool(ItemStruct itemStruct)
+    {
+        return itemStruct.getItemStack().getItem() instanceof ItemCloth;
+    }
+
     protected boolean isRawFood(ItemStruct itemStruct)
     {
-        if (!(itemStruct.getSourceItemStack().getItem() instanceof ItemFood))
+        if (!(itemStruct.getItemStack().getItem() instanceof ItemFood))
         {
             return false;
         }
-        int blockId = itemStruct.getSourceItemStack().itemID;
+        int blockId = itemStruct.getItemStack().itemID;
         return !(
                 blockId == Item.bread.itemID
                 || blockId == Item.goldenCarrot.itemID
@@ -132,12 +156,14 @@ public class VanillaSupport implements IDocModSupport
 
     protected boolean isBaseBlock(ItemStruct itemStruct)
     {
-        if (!(itemStruct.getSourceItemStack().getItem() instanceof ItemBlock))
+        if (!(itemStruct.getItemStack().getItem() instanceof ItemBlock))
         {
             return false;
         }
-        int blockId = ((ItemBlock) itemStruct.getSourceItemStack().getItem()).getBlockID();
+        int blockId = ((ItemBlock) itemStruct.getItemStack().getItem()).getBlockID();
         return blockId == Block.dirt.blockID
+               || blockId == Block.grass.blockID
+               || blockId == Block.tilledField.blockID
                || blockId == Block.cobblestone.blockID
                || blockId == Block.gravel.blockID
                || blockId == Block.sandStone.blockID
@@ -146,6 +172,7 @@ public class VanillaSupport implements IDocModSupport
                || blockId == Block.glowStone.blockID
                || blockId == Block.bedrock.blockID
                || blockId == Block.ice.blockID
+               || blockId == Block.web.blockID
                || blockId == Block.mycelium.blockID
                || blockId == Block.obsidian.blockID
                || blockId == Block.sand.blockID
@@ -154,11 +181,11 @@ public class VanillaSupport implements IDocModSupport
 
     protected boolean isPlantBlock(ItemStruct itemStruct)
     {
-        if (!(itemStruct.getSourceItemStack().getItem() instanceof ItemBlock))
+        if (!(itemStruct.getItemStack().getItem() instanceof ItemBlock))
         {
             return false;
         }
-        ItemBlock block = ((ItemBlock) itemStruct.getSourceItemStack().getItem());
+        ItemBlock block = ((ItemBlock) itemStruct.getItemStack().getItem());
         int blockId = block.getBlockID();
         return blockId == Block.cactus.blockID
                || blockId == Block.deadBush.blockID
@@ -166,60 +193,71 @@ public class VanillaSupport implements IDocModSupport
                || blockId == Block.melon.blockID
                || blockId == Block.pumpkin.blockID
                || blockId == Block.sapling.blockID
+               || blockId == Block.mushroomBrown.blockID
+               || blockId == Block.mushroomCapBrown.blockID
+               || blockId == Block.mushroomCapRed.blockID
+               || blockId == Block.mushroomRed.blockID
+               || blockId == Block.grass.blockID
+               || blockId == Block.cocoaPlant.blockID
+               || blockId == Block.plantRed.blockID
+               || blockId == Block.plantYellow.blockID
+               || blockId == Block.vine.blockID
+               || blockId == Block.waterlily.blockID
                || blockId == Block.leaves.blockID;
     }
 
     protected boolean isWood(ItemStruct itemStruct)
     {
-        if (!(itemStruct.getSourceItemStack().getItem() instanceof ItemBlock))
+        if (!(itemStruct.getItemStack().getItem() instanceof ItemBlock))
         {
             return false;
         }
-        int blockId = ((ItemBlock) itemStruct.getSourceItemStack().getItem()).getBlockID();
+        int blockId = ((ItemBlock) itemStruct.getItemStack().getItem()).getBlockID();
         return blockId == Block.wood.blockID;
     }
 
     protected boolean isBreakableBlockDrop(ItemStruct itemStruct)
     {
-        String name = itemStruct.name.toLowerCase();
-        int itemId = itemStruct.getSourceItemStack().itemID;
+        int itemId = itemStruct.getItemStack().itemID;
         return itemId == Item.clay.itemID
                || itemId == Item.coal.itemID
                || itemId == Item.diamond.itemID
                || itemId == Item.emerald.itemID
                || itemId == Item.redstone.itemID
                || itemId == Item.flint.itemID
-               || itemId == Item.snowball.itemID;
+               || itemId == Item.snowball.itemID
+               || itemId == Item.glowstone.itemID;
     }
 
     protected boolean isBucket(ItemStruct itemStruct)
     {
-        Item item = itemStruct.getSourceItemStack().getItem();
+        Item item = itemStruct.getItemStack().getItem();
         return item instanceof ItemBucket || item instanceof ItemBucketMilk;
     }
 
     protected boolean isMobDrop(ItemStruct itemStruct)
     {
-        int itemId = itemStruct.getSourceItemStack().itemID;
+        int itemId = itemStruct.getItemStack().itemID;
         return itemId == Item.silk.itemID
                || itemId == Item.feather.itemID
                || itemId == Item.gunpowder.itemID
                || itemId == Item.leather.itemID
                || itemId == Item.slimeBall.itemID
                || itemId == Item.egg.itemID
-               || (itemId == Item.dyePowder.itemID && itemStruct.damage == 0)
+               || (itemId == Item.dyePowder.itemID && itemStruct.damageId == 0)
                || itemId == Item.bone.itemID
                || itemId == Item.enderPearl.itemID
                || itemId == Item.blazeRod.itemID
+               || itemId == Item.spiderEye.itemID
                || itemId == Item.ghastTear.itemID;
     }
 
     protected boolean isPlantRawDye(ItemStruct itemStruct)
     {
-        if (itemStruct.getSourceItemStack().itemID == Item.dyePowder.itemID)
+        if (itemStruct.getItemStack().itemID == Item.dyePowder.itemID)
         {
 
-            String colorName = ItemDye.dyeColorNames[MathHelper.clamp_int(itemStruct.getSourceItemStack().getItemDamage(), 0, 15)];
+            String colorName = ItemDye.dyeColorNames[MathHelper.clamp_int(itemStruct.getItemStack().getItemDamage(), 0, 15)];
             return colorName.equals("red") // rose
                    || colorName.equals("yellow") // dandellion
                    || colorName.equals("brown"); // cocoa beans
@@ -231,9 +269,9 @@ public class VanillaSupport implements IDocModSupport
 
     protected boolean isNonPlantRawDye(ItemStruct itemStruct)
     {
-        if (itemStruct.getSourceItemStack().itemID == Item.dyePowder.itemID)
+        if (itemStruct.getItemStack().itemID == Item.dyePowder.itemID)
         {
-            String colorName = ItemDye.dyeColorNames[MathHelper.clamp_int(itemStruct.getSourceItemStack().getItemDamage(), 0, 15)];
+            String colorName = ItemDye.dyeColorNames[MathHelper.clamp_int(itemStruct.getItemStack().getItemDamage(), 0, 15)];
             return colorName.equals("black") // squid
                    || colorName.equals("blue"); // lapis lazuli
         }
@@ -241,29 +279,37 @@ public class VanillaSupport implements IDocModSupport
 
     }
 
+    protected boolean isHeadOrSkull(ItemStruct itemStruct)
+    {
+        return itemStruct.getItemStack().getItem() instanceof ItemSkull;
+    }
+
     protected boolean isExclusiveDungeonLoot(ItemStruct itemStruct)
     {
-        int itemId = itemStruct.getSourceItemStack().itemID;
+        int itemId = itemStruct.getItemStack().itemID;
         return itemId == Item.saddle.itemID
                || itemId == Item.horseArmorDiamond.itemID
                || itemId == Item.horseArmorGold.itemID
                || itemId == Item.horseArmorIron.itemID
-               || itemStruct.getSourceItemStack().getItem() instanceof ItemRecord;
+               || itemId == Item.expBottle.itemID
+               || itemId == Item.enchantedBook.itemID
+               || itemStruct.getItemStack().getItem() instanceof ItemRecord;
     }
 
     protected boolean isSpawner(ItemStruct itemStruct)
     {
-        return itemStruct.getSourceItemStack().getItem() instanceof ItemMobSpawner
-               || itemStruct.getSourceItemStack().getItem() instanceof ItemMonsterPlacer;
+        return itemStruct.getItemStack().getItem() instanceof ItemMobSpawner
+               || itemStruct.getItemStack().getItem() instanceof ItemMonsterPlacer;
     }
 
     protected boolean isPlantDrop(ItemStruct itemStruct)
     {
-        Item item = itemStruct.getSourceItemStack().getItem();
-        int itemId = itemStruct.getSourceItemStack().itemID;
+        Item item = itemStruct.getItemStack().getItem();
+        int itemId = itemStruct.getItemStack().itemID;
         return item instanceof ItemLeaves
                || itemId == Item.seeds.itemID
                || itemId == Item.reed.itemID
+               || itemId == Item.netherStalkSeeds.itemID
                || itemId == Item.wheat.itemID;
     }
 }

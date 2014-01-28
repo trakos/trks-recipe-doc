@@ -13,6 +13,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class XmlExporter
 {
@@ -34,8 +35,8 @@ public class XmlExporter
             {
                 Element itemElement = doc.createElement("item");
                 itemsElement.appendChild(itemElement);
-                itemElement.setAttribute("id", Integer.toString(item.id));
-                itemElement.setAttribute("damage", Integer.toString(item.damage));
+                itemElement.setAttribute("id", Integer.toString(item.itemId));
+                itemElement.setAttribute("damage", Integer.toString(item.damageId));
                 itemElement.setAttribute("icon", item.getIconName());
                 itemElement.setAttribute("description", item.description);
                 itemElement.setAttribute("name", item.name);
@@ -53,6 +54,23 @@ public class XmlExporter
 
                     itemAttribute.setAttribute("key", key);
                     itemAttribute.setAttribute("value", item.attributes.get(key));
+                }
+
+                for (HashMap<IdDamagePair, Float> rawCost : item.rawCosts)
+                {
+                    Element elementRawCost = doc.createElement("rawCost");
+                    itemElement.appendChild(elementRawCost);
+
+                    for (IdDamagePair idDamagePair : rawCost.keySet())
+                    {
+                        Element elementCostItem = doc.createElement("rawCostItem");
+                        elementRawCost.appendChild(elementCostItem);
+
+                        elementCostItem.setAttribute("id", Integer.toString(idDamagePair.itemId));
+                        elementCostItem.setAttribute("damage", Integer.toString(idDamagePair.damageId));
+                        elementCostItem.setAttribute("amount", Float.toString(rawCost.get(idDamagePair)));
+                    }
+
                 }
             }
 
@@ -77,7 +95,7 @@ public class XmlExporter
                     recipeItemElement.setAttribute("y", Integer.toString(item.relativeY));
                     recipeItemElement.setAttribute("amount", Integer.toString(item.amount));
 
-                    for (RecipeItemStruct.RecipeItemIdStruct recipeItemId : item.itemIds)
+                    for (IdDamagePair recipeItemId : item.itemIds)
                     {
                         Element optionElement = doc.createElement("option");
                         recipeItemElement.appendChild(optionElement);
@@ -101,7 +119,7 @@ public class XmlExporter
                 itemElement.setAttribute("name", recipeType.name);
                 itemElement.setAttribute("image", recipeType.image);
 
-                for (RecipeTypeMachineIdStruct recipeMachineId : recipeType.machines)
+                for (IdDamagePair recipeMachineId : recipeType.machines)
                 {
                     Element machineElement = doc.createElement("machine");
                     itemElement.appendChild(machineElement);

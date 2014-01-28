@@ -2,6 +2,7 @@ package trks.recipedoc.generate;
 
 import trks.recipedoc.generate.exporter.PhpExporter;
 import trks.recipedoc.generate.exporter.XmlExporter;
+import trks.recipedoc.generate.finishers.ItemCostCalculator;
 import trks.recipedoc.generate.loaders.DataLoader;
 
 import java.io.File;
@@ -41,6 +42,8 @@ public class Generate
         init();
         DataLoader dataLoader = new DataLoader();
         //DataRenderer.render(DataLoader.items);
+        ItemCostCalculator dataCalculator = new ItemCostCalculator(dataLoader.items, dataLoader.recipes);
+        dataCalculator._printNotCraftedItems();
 
         XmlExporter.export(dataLoader.items, dataLoader.recipes, DataLoader.getRecipeHandlers(), dataLoader.categories, new File(xmlFile));
         PhpExporter.export(dataLoader.items, dataLoader.recipes, DataLoader.getRecipeHandlers(), dataLoader.categories, new File(phpFile));

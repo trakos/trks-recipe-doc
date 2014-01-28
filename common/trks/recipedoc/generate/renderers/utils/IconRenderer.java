@@ -67,7 +67,7 @@ public class IconRenderer
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        drawItemStack(itemStruct.getSourceItemStack(), 0, 0, "overlay");
+        drawItemStack(itemStruct.getItemStack(), 0, 0, "overlay");
 
         ScreenshotRenderer.saveTrimmedScreenshot(new File(Generate.iconDirectory + "/" + itemStruct.getIconName()), 160, 160, new Color(COLOR_R, COLOR_G, COLOR_B));
     }

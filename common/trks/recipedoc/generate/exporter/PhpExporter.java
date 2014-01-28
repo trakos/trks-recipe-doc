@@ -152,8 +152,8 @@ public class PhpExporter extends PrintWriter
                 {
                     writer.printlnAndIndent("new Item(array(");
                     {
-                        writer.printArrayAssign("id", item.id);
-                        writer.printArrayAssign("damage", item.damage);
+                        writer.printArrayAssign("id", item.itemId);
+                        writer.printArrayAssign("damage", item.damageId);
                         writer.printArrayAssign("icon", item.getIconName());
                         writer.printArrayAssign("name", item.name);
                         writer.printArrayAssign("mod", item.mod);
@@ -196,7 +196,7 @@ public class PhpExporter extends PrintWriter
                                     writer.printArrayAssign("y", item.relativeY);
                                     writer.printArrayAssign("amount", item.amount);
                                     writer.printlnAndIndent("'items' => array(");
-                                    for (RecipeItemStruct.RecipeItemIdStruct itemIdStruct : item.itemIds)
+                                    for (IdDamagePair itemIdStruct : item.itemIds)
                                     {
                                         writer.printlnAndIndent("new ItemId(array(");
                                         {
@@ -225,7 +225,7 @@ public class PhpExporter extends PrintWriter
                         writer.printArrayAssign("name", recipeType.name);
                         writer.printArrayAssign("image", recipeType.image);
                         writer.printlnAndIndent("'machines' => array(");
-                        for (RecipeTypeMachineIdStruct machine : recipeType.machines)
+                        for (IdDamagePair machine : recipeType.machines)
                         {
                             writer.printlnAndIndent("new ItemId(array(");
                             {

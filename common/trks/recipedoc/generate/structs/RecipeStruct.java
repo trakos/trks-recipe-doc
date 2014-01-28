@@ -5,18 +5,27 @@ import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import net.minecraft.util.MD5String;
 import trks.recipedoc.generate.loaders.DataLoader;
-import trks.recipedoc.modsupport.ModSupportHandler;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class RecipeStruct
 {
+    public enum RecipeMethod
+    {
+        UNIVERSAL,
+        METHOD_A,
+        METHOD_B,
+        METHOD_C
+    }
+
     public Collection<RecipeItemStruct> items;
     public String recipeHandlerName;
     public boolean visible = true;
     public Collection<String> itemMods;
+    public boolean useInRawCostCalculation = true;
+    public RecipeMethod recipeMethod = RecipeMethod.UNIVERSAL;
 
     public RecipeStruct(ICraftingHandler craftingHandler, int recipeNumber)
     {
@@ -49,12 +58,24 @@ public class RecipeStruct
         HashSet<String> itemMods = new HashSet<String>();
         for (RecipeItemStruct recipeItem : recipeItems)
         {
-            for (RecipeItemStruct.RecipeItemIdStruct itemId : recipeItem.itemIds)
+            for (IdDamagePair itemId : recipeItem.itemIds)
             {
                 itemMods.add(DataLoader.getItemModId(itemId.itemId));
             }
         }
         this.itemMods = itemMods;
+    }
+
+    public boolean hasIngredient(IdDamagePair itemId)
+    {
+        for (RecipeItemStruct item : items)
+        {
+            if (item.elementType != RecipeItemStruct.RecipeElementType.result && item.hasIngredient(itemId))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -66,13 +87,14 @@ public class RecipeStruct
     {
         for (RecipeItemStruct item : items)
         {
-            for (RecipeItemStruct.RecipeItemIdStruct itemId : item.itemIds)
+            for (IdDamagePairWithStack itemId : item.itemIds)
             {
                 if (classType.isInstance(itemId.getItemStack().getItem()))
                 {
                     return true;
                 }
             }
+
         }
         return false;
     }
@@ -91,7 +113,7 @@ public class RecipeStruct
             stringBuilder.append(item.elementType.toString());
             stringBuilder.append(item.relativeX);
             stringBuilder.append(item.relativeY);
-            for (RecipeItemStruct.RecipeItemIdStruct itemId : item.itemIds)
+            for (IdDamagePair itemId : item.itemIds)
             {
                 stringBuilder.append(itemId.itemId);
                 stringBuilder.append(itemId.damageId);

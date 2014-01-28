@@ -1,7 +1,7 @@
 package trks.recipedoc.api;
 import codechicken.nei.recipe.ICraftingHandler;
+import trks.recipedoc.generate.structs.IdDamagePairWithStack;
 import trks.recipedoc.generate.structs.ItemStruct;
-import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 
 import java.util.Collection;
@@ -63,5 +63,5 @@ public interface IDocModSupport
      * @param recipeItemStruct recipeItemStruct to correct
      *
      */
-    void correctRecipeItemStruct(RecipeItemStruct.RecipeItemIdStruct recipeItemStruct);
+    void correctRecipeItemStruct(IdDamagePairWithStack recipeItemStruct);
 }

@@ -10,11 +10,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.item.*;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import trks.recipedoc.api.API;
 import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.api.IRecipeHandlerMachineRegistrar;
+import trks.recipedoc.generate.structs.IdDamagePairWithStack;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
@@ -48,7 +51,7 @@ public class MekanismSupport implements IDocModSupport
     @Override
     public void correctItemStruct(ItemStruct itemStruct, IRecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar)
     {
-        ItemStack itemStack = itemStruct.getSourceItemStack();
+        ItemStack itemStack = itemStruct.getItemStack();
 
         fixItemCategory(itemStack, itemStruct);
         if (itemStruct.mod.equals("MekanismGenerators"))
@@ -70,25 +73,98 @@ public class MekanismSupport implements IDocModSupport
         if ((itemStack.getItem() instanceof ItemEnergized || itemStack.getItem() instanceof ItemBlockEnergyCube) && itemStack.getItemDamage() == 100)
         {
             itemStruct.showOnList = false;
-            itemStruct.damage = -1;
+            itemStruct.damageId = -1;
         }
         else
         {
-            itemStruct.damage = getOverwrittenItemDamage(itemStack);
+            itemStruct.damageId = getOverwrittenItemDamage(itemStack);
         }
 
         RecipeTypes machineRecipeType = getMachineRecipeType(itemStack);
         if (machineRecipeType != null)
         {
-            recipeHandlerMachineRegistrar.registerRecipeHandlerMachine(machineRecipeType.getCraftingHandler(), itemStruct.id, itemStruct.damage);
+            recipeHandlerMachineRegistrar.registerRecipeHandlerMachine(machineRecipeType.getCraftingHandler(), itemStruct.itemId, itemStruct.damageId);
             itemStruct.attributes.put("Machine action", machineRecipeType.getDescription());
+        }
+
+        fixItemComplexity(itemStruct);
+    }
+
+    private void fixItemComplexity(ItemStruct itemStruct)
+    {
+        if (itemStruct.category.equals(CATEGORY_MACHINES))
+        {
+
+            if(BlockMachine.MachineType.get(itemStruct.getItemStack()) == BlockMachine.MachineType.DIGITAL_MINER)
+            {
+                itemStruct.craftingComplexity = 250f;
+            }
+            else
+            {
+                itemStruct.craftingComplexity = 100f;
+            }
+        }
+        else if (itemStruct.category.equals(CATEGORY_INDUCTION))
+        {
+            itemStruct.craftingComplexity = 100f;
+        }
+        else if (itemStruct.category.equals(CATEGORY_GENERATORS))
+        {
+            itemStruct.craftingComplexity = 100f;
+        }
+        else if (itemStruct.category.equals(CATEGORY_DUSTS_CLAMPS))
+        {
+            itemStruct.craftingComplexity = 1f;
+        }
+        else if (itemStruct.category.equals(CATEGORY_INGOTS))
+        {
+            itemStruct.craftingComplexity = 1f;
+        }
+        else if (itemStruct.category.equals(CATEGORY_UPGRADES))
+        {
+            itemStruct.craftingComplexity = 40f;
+        }
+        else if (itemStruct.category.equals(CATEGORY_E_TOOLS))
+        {
+            if (itemStruct.getItemStack().getItem() instanceof ItemRobit)
+            {
+                itemStruct.craftingComplexity = 200f;
+            }
+            else
+            {
+                itemStruct.craftingComplexity = 50f;
+            }
+        }
+        else if (itemStruct.category.equals(CATEGORY_E_CUBE))
+        {
+            // damageId has tier filled in already
+            itemStruct.craftingComplexity = 200f + itemStruct.damageId;
+        }
+        else if (itemStruct.category.equals(CATEGORY_FACTORIES))
+        {
+            // damageId is raising with tiers
+            itemStruct.craftingComplexity = 200f + itemStruct.damageId / 1000;
+        }
+        else if (itemStruct.category.equals(CATEGORY_PIPES_CABLES))
+        {
+            itemStruct.craftingComplexity = 50f;
+        }
+        else if (itemStruct.category.equals(API.STANDARD_CATEGORY_ORE))
+        {
+            itemStruct.craftingComplexity = .5f;
+        }
+        else
+        {
+            itemStruct.craftingComplexity = 10f;
         }
     }
 
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        return itemStruct.name.endsWith(" Ore");
+        return
+                itemStruct.itemId == Item.itemsList[Mekanism.oreBlockID].itemID;
+                //|| itemStruct.getItemStack().getItem() instanceof ItemIngot;
     }
 
     @Override
@@ -115,7 +191,7 @@ public class MekanismSupport implements IDocModSupport
     }
 
     @Override
-    public void correctRecipeItemStruct(RecipeItemStruct.RecipeItemIdStruct recipeItemStruct)
+    public void correctRecipeItemStruct(IdDamagePairWithStack recipeItemStruct)
     {
         recipeItemStruct.damageId = getOverwrittenItemDamage(recipeItemStruct.getItemStack());
     }
@@ -131,11 +207,64 @@ public class MekanismSupport implements IDocModSupport
             if (foundElectricRecipeHashes.contains(recipeHash))
             {
                 recipeStruct.visible = false;
+                recipeStruct.useInRawCostCalculation = false;
             }
             else
             {
                 foundElectricRecipeHashes.add(recipeHash);
             }
+        }
+        if (handler instanceof EnrichmentChamberRecipeHandler)
+        {
+            boolean hasCharcoal = false;
+            for (RecipeItemStruct item : recipeStruct.items)
+            {
+                for (IdDamagePairWithStack itemId : item.itemIds)
+                {
+                    if (itemId.itemId == Mekanism.Clump.itemID)
+                    {
+                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_A;
+                    }
+                    else if (itemId.itemId == Mekanism.oreBlockID
+                             || itemId.itemId == Block.oreIron.blockID
+                             || itemId.itemId == Block.oreGold.blockID
+                             || itemId.itemId == Block.oreEmerald.blockID
+                             || itemId.itemId == Block.oreCoal.blockID)
+                    {
+                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_B;
+                    }
+                    if (itemId.itemId == Item.coal.itemID && itemId.damageId != 0)
+                    {
+                        hasCharcoal = true;
+                        break;
+                    }
+                }
+                if (hasCharcoal) break;
+            }
+            recipeStruct.useInRawCostCalculation = !hasCharcoal;
+        }
+        else if (handler instanceof CrusherRecipeHandler)
+        {
+            boolean ignoreRecipeInCalculation = true;
+            for (RecipeItemStruct item : recipeStruct.items)
+            {
+                for (IdDamagePairWithStack itemId : item.itemIds)
+                {
+                    if (itemId.itemId == Mekanism.Clump.itemID)
+                    {
+                        recipeStruct.recipeMethod = RecipeStruct.RecipeMethod.METHOD_A;
+                    }
+                    if (itemId.itemId == Item.diamond.itemID
+                        || itemId.itemId == Mekanism.Clump.itemID
+                        || itemId.itemId == MekanismGenerators.BioFuel.itemID)
+                    {
+                        ignoreRecipeInCalculation = false;
+                        break;
+                    }
+                }
+                if (!ignoreRecipeInCalculation) break;
+            }
+            recipeStruct.useInRawCostCalculation = !ignoreRecipeInCalculation;
         }
     }
 
@@ -236,8 +365,8 @@ public class MekanismSupport implements IDocModSupport
 
     protected void fixMachinesNameAndDescription(ItemStruct itemStruct)
     {
-        ItemStack itemStack = itemStruct.getSourceItemStack();
-        if (itemStruct.getSourceItemStack().getItem() instanceof ItemBlockMachine)
+        ItemStack itemStack = itemStruct.getItemStack();
+        if (itemStruct.getItemStack().getItem() instanceof ItemBlockMachine)
         {
             BlockMachine.MachineType type = BlockMachine.MachineType.get(itemStack);
             if (isTypeFactory(type))

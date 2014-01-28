@@ -13,12 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemStruct
+public class ItemStruct extends IdDamagePairWithStack
 {
-    protected final ItemStack sourceItemStack;
-
-    public int id;
-    public int damage;
     public String name;
     public List<String> tooltipDescription = new ArrayList<String>();
     public String description;
@@ -37,10 +33,12 @@ public class ItemStruct
      * whether it is uncraftable item
      */
     public boolean isBaseItem;
+    public float craftingComplexity = 10;
 
     public ItemStruct(ItemStack itemStack)
     {
-        this.id = itemStack.itemID;
+        super(itemStack.itemID, itemStack.getItemDamage(), itemStack.copy());
+
         this.name = itemStack.getDisplayName();
 
         this.tooltipDescription = getNameList(itemStack);
@@ -51,21 +49,14 @@ public class ItemStruct
         this.type = DataNEIFetcher.getItemType(itemStack);
         this.category = getTypeCategory(this.type);
 
-        this.damage = itemStack.getItemDamage();
-
         this.showOnList = true;
-
-        this.sourceItemStack = itemStack.copy();
     }
+
+    public ArrayList<HashMap<IdDamagePair, Float>> rawCosts = new ArrayList<HashMap<IdDamagePair, Float>>();
 
     public String getIconName()
     {
-        return this.id + "_" + this.damage + ".png";
-    }
-
-    public ItemStack getSourceItemStack()
-    {
-        return this.sourceItemStack;
+        return this.itemId + "_" + this.damageId + ".png";
     }
 
     static protected void fillAttributes(Map<String, String> map, Multimap attributes)

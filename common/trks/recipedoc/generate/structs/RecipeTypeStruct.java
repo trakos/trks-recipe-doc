@@ -13,7 +13,7 @@ public class RecipeTypeStruct
     public String typeId;
     public String name;
     public String image;
-    public HashSet<RecipeTypeMachineIdStruct> machines = new HashSet<RecipeTypeMachineIdStruct>();
+    public HashSet<IdDamagePair> machines = new HashSet<IdDamagePair>();
 
     public ICraftingHandler getCraftingHandler()
     {
@@ -40,6 +40,6 @@ public class RecipeTypeStruct
 
     public void registerMachineHandling(int itemId, int damageId)
     {
-        machines.add(new RecipeTypeMachineIdStruct(itemId, damageId));
+        machines.add(new IdDamagePair(itemId, damageId));
     }
 }
