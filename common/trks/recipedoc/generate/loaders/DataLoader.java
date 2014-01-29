@@ -1,6 +1,5 @@
 package trks.recipedoc.generate.loaders;
 
-import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableSortedMap;
@@ -96,7 +95,7 @@ public class DataLoader
     protected ArrayList<RecipeStruct> loadRecipesByTarget(ItemStack itemStack)
     {
         ArrayList<RecipeStruct> recipes = new ArrayList<RecipeStruct>();
-        for (ICraftingHandler craftingHandler : GuiCraftingRecipe.craftinghandlers)
+        for (ICraftingHandler craftingHandler : DataNEIFetcher.getAllNEICraftingHandlers())
         {
             ICraftingHandler handler = craftingHandler.getRecipeHandler("item", itemStack.copy());
             if (handler.numRecipes() > 0)

@@ -16,12 +16,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class ModSupportHandler
 {
     static
     {
-        API.registerModSupport(new VanillaSupport());
         API.registerModSupport(new MekanismSupport());
+        API.registerModSupport(new VanillaSupport());
     }
 
     static protected boolean unloadedModsRemoved = false;

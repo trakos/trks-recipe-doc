@@ -1,18 +1,15 @@
+
 package trks.recipedoc.modsupport.mods;
 
 import codechicken.nei.recipe.FurnaceRecipeHandler;
 import codechicken.nei.recipe.ICraftingHandler;
 import com.google.common.collect.ImmutableMap;
-import mekanism.api.gas.IGasItem;
-import mekanism.client.nei.*;
-import mekanism.common.IFactory;
-import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine;
-import mekanism.common.item.*;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.*;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.nei.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import trks.recipedoc.api.API;
 import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.api.IRecipeHandlerMachineRegistrar;
@@ -22,10 +19,8 @@ import trks.recipedoc.generate.structs.RecipeItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
 import universalelectricity.core.item.IItemElectric;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class MekanismSupport implements IDocModSupport
 {
@@ -93,15 +88,7 @@ public class MekanismSupport implements IDocModSupport
     {
         if (itemStruct.category.equals(CATEGORY_MACHINES))
         {
-
-            if(BlockMachine.MachineType.get(itemStruct.getItemStack()) == BlockMachine.MachineType.DIGITAL_MINER)
-            {
-                itemStruct.craftingComplexity = 250f;
-            }
-            else
-            {
-                itemStruct.craftingComplexity = 100f;
-            }
+            itemStruct.craftingComplexity = 100f;
         }
         else if (itemStruct.category.equals(CATEGORY_INDUCTION))
         {
@@ -164,13 +151,55 @@ public class MekanismSupport implements IDocModSupport
         return itemStruct.itemId == Item.itemsList[Mekanism.oreBlockID].itemID
                || (
                 itemStruct.itemId == Mekanism.Ingot.itemID
-                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedObsidian")
-                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedGlowstone")
+                && !getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedObsidian")
+                && !getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedGlowstone")
         )
                || (
                 itemStruct.itemId == Mekanism.Dust.itemID
-                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
+                && !getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
         ) || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
+    }
+
+    public static String getOreDictName(ItemStack check)
+    {
+        HashMap<Integer, ArrayList<ItemStack>> oreStacks;
+        try
+        {
+            Field f = OreDictionary.class.getDeclaredField("oreStacks");
+            f.setAccessible(true);
+            oreStacks = (HashMap<Integer, ArrayList<ItemStack>>) f.get(null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
+        int idFound = -1;
+
+        for (Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
+        {
+            for (ItemStack stack : entry.getValue())
+            {
+                if (stack.isItemEqual(check))
+                {
+                    idFound = entry.getKey();
+                    break;
+                }
+            }
+
+            if (idFound != -1)
+            {
+                break;
+            }
+        }
+
+        if (idFound == -1)
+        {
+            return null;
+        }
+
+        return OreDictionary.getOreName(idFound);
     }
 
     @Override
@@ -271,9 +300,10 @@ public class MekanismSupport implements IDocModSupport
         return IFactory.RecipeType.values()[((ItemBlockMachine) itemStack.getItem()).getRecipeType(itemStack)];
     }
 
+
     protected Boolean isTypeFactory(ItemStack itemStack)
     {
-        return itemStack.getItem() instanceof ItemBlockMachine && isTypeFactory(BlockMachine.MachineType.get(itemStack));
+        return itemStack.getItem() instanceof ItemBlockMachine && isTypeFactory(BlockMachine.MachineType.getFromMetadata(itemStack.getItemDamage()));
     }
 
     protected Boolean isTypeFactory(BlockMachine.MachineType machineType)
@@ -325,17 +355,11 @@ public class MekanismSupport implements IDocModSupport
                         return RecipeTypes.ENRICHING;
                     case CRUSHING:
                         return RecipeTypes.CRUSHING;
-                    case COMPRESSING:
-                        return RecipeTypes.COMPRESSING;
-                    case COMBINING:
-                        return RecipeTypes.COMBINING;
-                    case PURIFYING:
-                        return RecipeTypes.PURIFYING;
                 }
             }
             else
             {
-                switch (BlockMachine.MachineType.get(itemStack))
+                switch (BlockMachine.MachineType.getFromMetadata(itemStack.getItemDamage()))
                 {
                     case ENRICHMENT_CHAMBER:
                         return RecipeTypes.ENRICHING;
@@ -362,12 +386,12 @@ public class MekanismSupport implements IDocModSupport
         ItemStack itemStack = itemStruct.getItemStack();
         if (itemStruct.getItemStack().getItem() instanceof ItemBlockMachine)
         {
-            BlockMachine.MachineType type = BlockMachine.MachineType.get(itemStack);
+            BlockMachine.MachineType type = BlockMachine.MachineType.getFromMetadata(itemStack.getItemDamage());
             if (isTypeFactory(type))
             {
                 itemStruct.name += " (" + getFactoryRecipeType(itemStack).getName() + ")";
             }
-            itemStruct.description = type.getDescription().replaceAll("!n", "");
+            itemStruct.description = "";
         }
     }
 
@@ -398,16 +422,12 @@ public class MekanismSupport implements IDocModSupport
             }
             else if (item instanceof ItemBlockMachine)
             {
-                if (isTypeFactory(BlockMachine.MachineType.get(itemStack)))
+                if (isTypeFactory(BlockMachine.MachineType.getFromMetadata(itemStack.getItemDamage())))
                 {
                     int recipeType = ((ItemBlockMachine) item).getRecipeType(itemStack);
                     return 1000 + (itemStack.getItemDamage() * 100) + recipeType;
                 }
             }
-        }
-        else if (item instanceof IGasItem)
-        {
-            return 0;
         }
         return itemStack.getItemDamage();
     }
@@ -425,7 +445,7 @@ public class MekanismSupport implements IDocModSupport
         }
         else if (item instanceof ItemBlockMachine)
         {
-            BlockMachine.MachineType type = BlockMachine.MachineType.get(itemStack);
+            BlockMachine.MachineType type = BlockMachine.MachineType.getFromMetadata(itemStack.getItemDamage());
             if (type == BlockMachine.MachineType.BASIC_FACTORY || type == BlockMachine.MachineType.ADVANCED_FACTORY || type == BlockMachine.MachineType.ELITE_FACTORY)
             {
                 itemStruct.category = CATEGORY_FACTORIES;
@@ -495,8 +515,9 @@ public class MekanismSupport implements IDocModSupport
         if (itemStack.getItem() instanceof IItemElectric)
         {
             IItemElectric item = (IItemElectric) itemStack.getItem();
-            itemStruct.attributes.put("Battery capacity", MekanismUtils.getEnergyDisplay(item.getMaxElectricityStored(itemStack) * Mekanism.FROM_UE));
+            itemStruct.attributes.put("Battery capacity", item.getMaxJoules(itemStack) + " j");
             itemStruct.attributes.put("Voltage", item.getVoltage(itemStack) + " v");
         }
     }
 }
+

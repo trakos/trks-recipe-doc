@@ -231,7 +231,7 @@ public class VanillaSupport implements IDocModSupport
                || itemId == Item.redstone.itemID
                || itemId == Item.flint.itemID
                || itemId == Item.snowball.itemID
-               || itemId == Item.glowstone.itemID;
+               || itemId == 348;//Item.glowstone.itemID;
     }
 
     protected boolean isBucket(ItemStruct itemStruct)
@@ -293,9 +293,6 @@ public class VanillaSupport implements IDocModSupport
     {
         int itemId = itemStruct.getItemStack().itemID;
         return itemId == Item.saddle.itemID
-               || itemId == Item.horseArmorDiamond.itemID
-               || itemId == Item.horseArmorGold.itemID
-               || itemId == Item.horseArmorIron.itemID
                || itemId == Item.expBottle.itemID
                || itemId == Item.enchantedBook.itemID
                || itemStruct.getItemStack().getItem() instanceof ItemRecord;

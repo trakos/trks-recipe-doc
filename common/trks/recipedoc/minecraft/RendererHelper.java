@@ -1,8 +1,10 @@
 package trks.recipedoc.minecraft;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 
 public class RendererHelper
@@ -26,6 +28,14 @@ public class RendererHelper
         {
             try
             {
+                Display.setDisplayMode(new DisplayMode(width, height));
+            }
+            catch (LWJGLException e)
+            {
+                e.printStackTrace();
+            }
+            /*try
+            {
                 Minecraft.getMinecraft().toggleFullscreen();
                 ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), width, "tempDisplayWidth", "field_71436_X");
                 ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), height, "tempDisplayHeight", "field_71435_Y");
@@ -34,7 +44,7 @@ public class RendererHelper
             catch (Exception e)
             {
                 System.err.println(e);
-            }
+            }*/
         }
     }
 }

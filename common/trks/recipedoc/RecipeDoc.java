@@ -1,7 +1,6 @@
 package trks.recipedoc;
 
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -23,18 +22,18 @@ public class RecipeDoc
     @SidedProxy(clientSide = "trks.recipedoc.client.ClientProxy", serverSide = "trks.recipedoc.CommonProxy")
     public static CommonProxy proxy;
 
-    @EventHandler
+    @Mod.PreInit
     public void preInit(FMLPreInitializationEvent event)
     {
     }
 
-    @EventHandler
+    @Mod.Init
     public void load(FMLInitializationEvent event)
     {
         TickRegistry.registerTickHandler(tickHandler, Side.CLIENT);
     }
 
-    @EventHandler
+    @Mod.PostInit
     public void postInit(FMLPostInitializationEvent event)
     {
     }

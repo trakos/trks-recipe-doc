@@ -1,5 +1,7 @@
 package trks.recipedoc.generate.renderers.utils;
 
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.NEIController;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IRecipeHandler;
@@ -7,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import trks.recipedoc.generate.Generate;
@@ -70,11 +71,11 @@ public class RecipeBackgroundRenderer
         {
             ICraftingHandler[] craftingHandlers = {craftingHandler};
             GuiCraftingRecipe recipe = (GuiCraftingRecipe) constructor.newInstance(Minecraft.getMinecraft().currentScreen, new ArrayList<ICraftingHandler>(Arrays.asList(craftingHandlers)));
-            Minecraft.getMinecraft().displayGuiScreen(recipe);
+            NEIClientUtils.overlayScreen(recipe);
             GL11.glClearColor(COLOR_R, COLOR_G, COLOR_B, 1);
 
             GL11.glColor4f(1, 1, 1, 1);
-            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("nei:textures/gui/recipebg.png"));
+            Minecraft.getMinecraft().renderEngine.bindTexture("nei:textures/gui/recipebg.png");
             GL11.glPushMatrix();
             {
                 int xSize = 176;
@@ -90,7 +91,7 @@ public class RecipeBackgroundRenderer
             //RendererHelper.drawTexturedModalRect(0, 0, 0, 0, 176, 166, 0);
 
             GL11.glTranslatef(5, 16, 0);
-            craftingHandler.drawBackground(0);
+            craftingHandler.drawBackground(NEIController.manager, 0);
             GL11.glPopMatrix();
 
             File targetFile = new File(Generate.craftingHandlersBackgroundsDirectory + "/" + getRecipeHandlerImageName(craftingHandler));

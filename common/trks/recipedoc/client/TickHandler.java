@@ -1,19 +1,14 @@
 package trks.recipedoc.client;
 
 import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.TickType;
-import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.EnumOptions;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.gen.FlatGeneratorInfo;
 import trks.recipedoc.generate.Generate;
-import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.minecraft.RendererHelper;
 
 import java.util.EnumSet;

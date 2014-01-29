@@ -1,8 +1,6 @@
 package trks.recipedoc.generate.structs;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import trks.recipedoc.api.API;
 import trks.recipedoc.generate.loaders.DataLoader;
@@ -43,8 +41,6 @@ public class ItemStruct extends IdDamagePairWithStack
         this.name = itemStack.getDisplayName();
 
         this.tooltipDescription = getNameList(itemStack);
-        //noinspection unchecked
-        fillAttributes(this.attributes, itemStack.getAttributeModifiers());
 
         this.mod = DataLoader.getItemModId(itemStack.itemID);
         this.type = DataNEIFetcher.getItemType(itemStack);
@@ -58,19 +54,6 @@ public class ItemStruct extends IdDamagePairWithStack
     public String getIconName()
     {
         return this.itemId + "_" + this.damageId + ".png";
-    }
-
-    static protected void fillAttributes(Map<String, String> map, Multimap attributes)
-    {
-        for (Object key : attributes.keys())
-        {
-            //noinspection unchecked
-            for (Object w : attributes.get(key))
-            {
-                AttributeModifier value = (AttributeModifier) w;
-                map.put(value.getName(), Double.toString(value.getAmount()));
-            }
-        }
     }
 
     static protected String getTypeCategory(String type)

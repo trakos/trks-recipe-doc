@@ -1,6 +1,5 @@
 package trks.recipedoc.generate.exporter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import trks.recipedoc.generate.structs.*;
@@ -45,7 +44,7 @@ public class XmlExporter
                 itemElement.setAttribute("category", item.category);
                 itemElement.setAttribute("showOnList", item.showOnList ? "1" : "0");
                 itemElement.setAttribute("isBaseItem", item.isBaseItem ? "1" : "0");
-                itemElement.setAttribute("tooltip", StringUtils.join(item.tooltipDescription, "; "));
+                itemElement.setAttribute("tooltip", "");
 
                 for (String key : item.attributes.keySet())
                 {

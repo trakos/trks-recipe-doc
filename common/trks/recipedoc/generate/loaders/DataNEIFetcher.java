@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.*;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class DataNEIFetcher
@@ -36,10 +37,25 @@ public class DataNEIFetcher
         return craftingHandlers;
     }
 
+    static public ArrayList<ICraftingHandler> getAllNEICraftingHandlers()
+    {
+        try
+        {
+            Field f = GuiCraftingRecipe.class.getDeclaredField("craftinghandlers");
+            f.setAccessible(true);
+            //noinspection unchecked
+            return (ArrayList<ICraftingHandler>)f.get(GuiCraftingRecipe.class);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     static protected ArrayList<ICraftingHandler> getActiveCraftingHandlers()
     {
         ArrayList<ICraftingHandler> foundHandlers = new ArrayList<ICraftingHandler>();
-        ArrayList<ICraftingHandler> remainingHandlers = new ArrayList<ICraftingHandler>(GuiCraftingRecipe.craftinghandlers);
+        ArrayList<ICraftingHandler> remainingHandlers = new ArrayList<ICraftingHandler>(getAllNEICraftingHandlers());
         for (ItemStack item : getItems())
         {
             Iterator<ICraftingHandler> craftingHandlerIterator = remainingHandlers.iterator();

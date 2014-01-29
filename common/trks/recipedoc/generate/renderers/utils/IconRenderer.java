@@ -45,7 +45,7 @@ public class IconRenderer
     {
         ScreenshotRenderer.deleteAllScreenshots();
         GL11.glPushMatrix();
-        GL11.glScaled(10, 10, 1);
+        GL11.glScaled(5, 5, 1);
     }
 
     static protected void endIconRendering()
@@ -88,7 +88,7 @@ public class IconRenderer
         GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(.5f, .5f, .5f, 1.0F));
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) 240 / 1.0F, (float) 240 / 1.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        renderItem.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().getTextureManager(), par1ItemStack, par2, par3);
+        renderItem.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().renderEngine, par1ItemStack, par2, par3);
         //renderItem.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, this.mc.getTextureManager(), par1ItemStack, par2, par3 - (this.draggedStack == null ? 0 : 8), par4Str);
         RenderHelper.disableStandardItemLighting();
     }

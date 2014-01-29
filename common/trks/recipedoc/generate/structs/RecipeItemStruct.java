@@ -26,12 +26,13 @@ public class RecipeItemStruct
         this.elementType = elementType;
 
         ArrayList<IdDamagePairWithStack> recipeItems = new ArrayList<IdDamagePairWithStack>();
-        for (ItemStack item : stack.items)
+        for (Object itemO : stack.items)
         {
+            ItemStack item = (ItemStack) itemO;
             recipeItems.add(ModSupportHandler.correctRecipeItemStruct(new IdDamagePairWithStack(item.itemID, item.getItemDamage(), item)));
         }
         this.itemIds = recipeItems;
-        this.amount = stack.items.length > 0 ? stack.items[0].stackSize : 0;
+        this.amount = stack.items.length > 0 ? ((ItemStack)(Object)stack.items[0]).stackSize : 0;
     }
 
     public boolean hasIngredient(IdDamagePair itemId)
