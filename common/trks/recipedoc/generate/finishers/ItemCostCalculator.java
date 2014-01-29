@@ -41,7 +41,7 @@ public class ItemCostCalculator
                     HashMap<IdDamagePair, Float> cost = new HashMap<IdDamagePair, Float>();
                     for (IdDamagePair idDamagePair : itemCostOption.items.keySet())
                     {
-                        cost.put(idDamagePair, itemCostOption.items.get(idDamagePair).amount);
+                        cost.put(idDamagePair, itemCostOption.items.get(idDamagePair).amount / itemCostOption.resultAmount);
                     }
                     item.rawCosts.add(cost);
                 }

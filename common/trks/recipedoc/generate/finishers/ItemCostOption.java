@@ -31,7 +31,6 @@ public class ItemCostOption implements Cloneable
     public HashMap<IdDamagePair, IngredientInfo> items = new HashMap<IdDamagePair, IngredientInfo>();
     public boolean areAllItemsBase = false;
     public float resultAmount = 1;
-    public float resultCost = 0;
     public HashSet<String> craftingHandlers = new HashSet<String>();
 
     protected ItemCostOption()
@@ -67,7 +66,6 @@ public class ItemCostOption implements Cloneable
                 }
             }
             addIngredient(idDamagePairWithStack, ingredient.amount, itemStructHashMap.get(idDamagePairWithStack).isBaseItem);
-            resultCost += ingredient.amount * itemStructHashMap.get(idDamagePairWithStack).itemCost;
         }
         craftingHandlers.add(recipeStruct.recipeHandlerName);
         _checkIfBase();
@@ -115,7 +113,8 @@ public class ItemCostOption implements Cloneable
         {
             other.items.put(idDamagePair.clone(), items.get(idDamagePair).clone());
         }
-
+        other.resultAmount = resultAmount;
+        other.areAllItemsBase = areAllItemsBase;
         return other;
     }
 

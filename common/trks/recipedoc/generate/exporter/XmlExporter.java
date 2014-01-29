@@ -56,10 +56,13 @@ public class XmlExporter
                     itemAttribute.setAttribute("value", item.attributes.get(key));
                 }
 
+                int index = 0;
                 for (HashMap<IdDamagePair, Float> rawCost : item.rawCosts)
                 {
                     Element elementRawCost = doc.createElement("rawCost");
                     itemElement.appendChild(elementRawCost);
+
+                    elementRawCost.setAttribute("index", Integer.toString(index));
 
                     for (IdDamagePair idDamagePair : rawCost.keySet())
                     {
