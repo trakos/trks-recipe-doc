@@ -96,7 +96,7 @@ public class RecipeBackgroundRenderer
 
             File targetFile = new File(Generate.craftingHandlersBackgroundsDirectory + "/" + getRecipeHandlerImageName(craftingHandler));
             int y = 46;
-            ScreenshotRenderer.saveTrimmedScreenshot(targetFile, 0, y, 512, 246 - y, new Color(COLOR_R, COLOR_G, COLOR_B));
+            ScreenshotRenderer.saveTrimmedScreenshot(targetFile, 0, y, 512, 500/*246*/ - y, new Color(COLOR_R, COLOR_G, COLOR_B));
         }
         catch (Exception e)
         {

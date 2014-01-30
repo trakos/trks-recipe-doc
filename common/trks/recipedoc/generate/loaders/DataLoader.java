@@ -77,6 +77,7 @@ public class DataLoader
         recipes = new ArrayList<RecipeStruct>();
         for (ItemStack item : DataNEIFetcher.getItems())
         {
+            if (item.getDisplayName().toLowerCase().contains("facade")) continue;
             items.add(ModSupportHandler.correctItemStruct(new ItemStruct(item)));
             recipes.addAll(loadRecipesByTarget(item));
         }

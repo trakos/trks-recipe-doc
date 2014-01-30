@@ -47,6 +47,59 @@ public class ItemStruct extends IdDamagePairWithStack
         this.category = getTypeCategory(this.type);
 
         this.showOnList = true;
+
+        this.isBaseItem =  isInOreDictionary(getItemStack()) || isNameSuggestingBeingBase();
+    }
+
+    protected boolean isInOreDictionary(ItemStack check)
+    {
+        HashMap<Integer, ArrayList<ItemStack>> oreStacks;
+        try
+        {
+            Field f = OreDictionary.class.getDeclaredField("oreStacks");
+            f.setAccessible(true);
+            oreStacks = (HashMap<Integer, ArrayList<ItemStack>>) f.get(null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
+        int idFound = -1;
+
+        for (Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
+        {
+            for (ItemStack stack : entry.getValue())
+            {
+                if (stack.isItemEqual(check))
+                {
+                    idFound = entry.getKey();
+                    break;
+                }
+            }
+
+            if (idFound != -1)
+            {
+                break;
+            }
+        }
+
+        if (idFound == -1)
+        {
+            return false;
+        }
+
+        return true;
+        //return OreDictionary.getOreName(idFound);
+    }
+
+    protected boolean isNameSuggestingBeingBase()
+    {
+        String name = this.name.toLowerCase();
+        return
+                name.contains("ingot") /*|| name.contains("dust")*/ || name.contains("ore") /*|| name.contains("paper")*/
+                || name.contains("bucket") || name.contains("facade");
     }
 
     public ArrayList<HashMap<IdDamagePair, Float>> rawCosts = new ArrayList<HashMap<IdDamagePair, Float>>();
