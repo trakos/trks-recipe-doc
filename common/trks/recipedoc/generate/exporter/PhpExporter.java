@@ -120,6 +120,7 @@ public class PhpExporter extends PrintWriter
                     .put("damage", "int")
                     .put("icon", "string")
                     .put("name", "string")
+                    .put("rawName", "string")
                     .put("mod", "string")
                     .put("type", "string")
                     .put("category", "string")
@@ -171,6 +172,7 @@ public class PhpExporter extends PrintWriter
                         writer.printArrayAssign("damage", item.damageId);
                         writer.printArrayAssign("icon", item.getIconName());
                         writer.printArrayAssign("name", item.name);
+                        writer.printArrayAssign("rawName", item.rawName);
                         writer.printArrayAssign("mod", item.mod);
                         writer.printArrayAssign("type", item.type);
                         writer.printArrayAssign("category", item.category);

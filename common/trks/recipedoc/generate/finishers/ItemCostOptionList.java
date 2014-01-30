@@ -126,6 +126,15 @@ public class ItemCostOptionList
                             if (resultCostOptionToCompare.isThisEqualToOrCheaperThan(newResultCostOption))
                             {
                                 isWorthAdding = false;
+                                break;
+                            }
+                        }
+                        for (ItemCostOption resultCostOptionToCompare : optionsToAdd)
+                        {
+                            if (resultCostOptionToCompare.isThisEqualToOrCheaperThan(newResultCostOption))
+                            {
+                                isWorthAdding = false;
+                                break;
                             }
                         }
                         if (isWorthAdding)

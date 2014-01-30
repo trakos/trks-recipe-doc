@@ -73,13 +73,13 @@ public class ItemCostOption implements Cloneable
 
     public boolean isThisEqualToOrCheaperThan(ItemCostOption otherOption)
     {
-        for (String craftingHandler : craftingHandlers)
+        /*for (String craftingHandler : craftingHandlers)
         {
             if (!otherOption.craftingHandlers.contains(craftingHandler))
             {
                 return false;
             }
-        }
+        }*/
 
 
         for (IdDamagePair idDamagePair : items.keySet())
