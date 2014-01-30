@@ -4,10 +4,12 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import trks.recipedoc.api.API;
 import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.generate.loaders.DataNEIFetcher;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 public class ItemStruct extends IdDamagePairWithStack
 {
+    public String rawName;
     public String name;
     public List<String> tooltipDescription = new ArrayList<String>();
     public String description;
@@ -41,6 +44,7 @@ public class ItemStruct extends IdDamagePairWithStack
         super(itemStack.itemID, itemStack.getItemDamage(), itemStack.copy());
 
         this.name = itemStack.getDisplayName();
+        this.rawName = itemStack.getItemName();
 
         this.tooltipDescription = getNameList(itemStack);
         //noinspection unchecked

@@ -70,6 +70,37 @@ public class RecipeStruct
         return false;
     }
 
+    public IdDamagePairWithStack getResult()
+    {
+        for (RecipeItemStruct item : items)
+        {
+            if (item.elementType == RecipeItemStruct.RecipeElementType.result)
+            {
+                return item.itemIds.get(0);
+            }
+        }
+        return null;
+    }
+
+    public boolean hasItemContainingLowercaseTextInNameAs(String partOfName, RecipeItemStruct.RecipeElementType elementType)
+    {
+        for (RecipeItemStruct item : items)
+        {
+            if (item.elementType == elementType)
+            {
+                for (IdDamagePairWithStack itemId : item.itemIds)
+                {
+                    if (itemId.getItemStack().getDisplayName().toLowerCase().contains(partOfName))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
     /**
      * Just an util method returning true if any ingredient or result is "instanceof" it
      * @param classType class for

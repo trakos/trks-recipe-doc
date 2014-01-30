@@ -15,11 +15,6 @@ public class ItemCostCalculator
 
     protected HashMap<IdDamagePair, ItemCostOptionList> itemCostsMap = new HashMap<IdDamagePair, ItemCostOptionList>();
 
-    class ItemCost
-    {
-
-    }
-
     public ItemCostCalculator(ArrayList<ItemStruct> items, ArrayList<RecipeStruct> recipeStructs)
     {
         this.items = items;
@@ -78,10 +73,6 @@ public class ItemCostCalculator
             {
                 continue;
             }
-            if (itemsMap.get(resultId).name.contains("Atomic Core"))
-            {
-                System.out.println("yep");
-            }
             System.out.println("Calculating raw cost for " + itemsMap.get(resultId).name + "...");
             boolean somethingChangedInCurrentLoopIteration = true;
             while (somethingChangedInCurrentLoopIteration)
@@ -97,64 +88,21 @@ public class ItemCostCalculator
                     }
                     boolean anyChange = costList.substituteItemWithCosts(resultId, ingredientCostOptionsList, ingredientId);
                     somethingChangedInCurrentLoopIteration = somethingChangedInCurrentLoopIteration || anyChange;
+                    if (anyChange && costList.itemCostOptionList.size() > 20)
+                    {
+                        somethingChangedInCurrentLoopIteration = false;
+                        System.err.println("\t\tbreaking - " + costList.itemCostOptionList.size() + " options!");
+                        break;
+                    }
                     System.out.println("\t\t" + costList.itemCostOptionList.size());
                 }
             }
             costList.removeUnfinished();
-            System.out.println("\tFinished options: " + costList.itemCostOptionList.size());
-        }
-
-
-        /*boolean somethingChangedInCurrentLoopIteration = true;
-        while (somethingChangedInCurrentLoopIteration)
-        {
-            somethingChangedInCurrentLoopIteration = false;
-            for (IdDamagePair resultId : itemCostsMap.keySet())
+            if (costList.itemCostOptionList.size() > 1)
             {
-                ItemCostOptionList itemCostOptionList = itemCostsMap.get(resultId);
-                if (itemCostOptionList.allPathsFinished)
-                {
-                    continue;
-                }
-                for (IdDamagePair possibleIngredientId : itemCostOptionList.getNonBaseItemsFromAllPaths())
-                {
-                    if (possibleIngredientId.equals(resultId))
-                    {
-                        throw new RuntimeException("circular recipe dependency in " + resultId.itemId + ":" + resultId.damageId);
-                    }
-                    if (itemCostsMap.containsKey(possibleIngredientId))
-                    {
-                        ItemCostOptionList ingredientOptionList = itemCostsMap.get(possibleIngredientId);
-                        boolean anyChange = itemCostOptionList.substituteItemWithCosts(resultId, ingredientOptionList, possibleIngredientId);
-                        if (anyChange)
-                        {
-                            ItemStruct itemStruct = itemsMap.get(resultId);
-                            System.out.println("Added new options (to total of " + itemCostOptionList.itemCostOptionList.size() + ")to " + itemStruct.name + "(" + itemStruct.itemId + ":" + itemStruct.damageId + ")");
-                        }
-                        somethingChangedInCurrentLoopIteration = somethingChangedInCurrentLoopIteration || anyChange;
-                        if (itemCostOptionList.allPathsFinished)
-                        {
-                            break;
-                        }
-                    }
-                }
-                *//*if (resultId.itemId == 3001 && itemCostOptionList.itemCostOptionList.size() > 10)
-                {
-                    for (ItemCostOption itemCostOption : itemCostOptionList.itemCostOptionList)
-                    {
-                        System.out.println("-- option --");
-                        for (IdDamagePair idDamagePair : itemCostOption.items.keySet())
-                        {
-                            ItemStruct item = itemsMap.get(idDamagePair);
-                            ItemCostOption.IngredientInfo ingredientInfo = itemCostOption.items.get(idDamagePair);
-                            System.out.println(item.name + ":" + ingredientInfo.amount + " " + (ingredientInfo.isBaseItem ? "(final)" : ""));
-                        }
-
-                    }
-                    System.out.println("-- end --");
-                }*//*
+                System.out.println("\tFinished options: " + costList.itemCostOptionList.size());
             }
-        }*/
+        }
     }
 
     protected HashMap<IdDamagePair, ArrayList<RecipeStruct>> _calculateRecipesMap()
