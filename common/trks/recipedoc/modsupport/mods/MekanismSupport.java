@@ -154,10 +154,10 @@ public class MekanismSupport implements IDocModSupport
                 && !getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedObsidian")
                 && !getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedGlowstone")
         )
-               || (
+               /*|| (
                 itemStruct.itemId == Mekanism.Dust.itemID
                 && !getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
-        ) || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
+        )*/ || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
     }
 
     public static String getOreDictName(ItemStack check)

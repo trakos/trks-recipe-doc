@@ -8,8 +8,7 @@ import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.generate.structs.IdDamagePairWithStack;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeStruct;
-import trks.recipedoc.modsupport.mods.MekanismSupport;
-import trks.recipedoc.modsupport.mods.VanillaSupport;
+import trks.recipedoc.modsupport.mods.*;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,7 +20,19 @@ public class ModSupportHandler
 {
     static
     {
+        API.registerModSupport(new AppliedEnergeticsSupport());
+        API.registerModSupport(new BuildcraftSupport());
+        API.registerModSupport(new CCTurtleSupport());
+        API.registerModSupport(new ComputerCraftSupport());
+        API.registerModSupport(new DimDoorsSupport());
+        API.registerModSupport(new EE3Support());
+        API.registerModSupport(new GalactiCraftSupport());
+        API.registerModSupport(new LogisticsPipesSupport());
         API.registerModSupport(new MekanismSupport());
+        API.registerModSupport(new MineFactoryReloadedSupport());
+        API.registerModSupport(new MystcraftSupport());
+        API.registerModSupport(new QuantumCraftSupport());
+        API.registerModSupport(new ThermalExpansionSupport());
         API.registerModSupport(new VanillaSupport());
     }
 

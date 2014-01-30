@@ -43,11 +43,17 @@ public class VanillaSupport implements IDocModSupport
         }
         if (isIngot(itemStruct))
         {
-            itemStruct.craftingComplexity = .5f;
+            itemStruct.craftingComplexity = .01f;
         }
         else
         {
             itemStruct.craftingComplexity = 1f;
+        }
+
+        if (itemStruct.itemId == Item.bootsChain.itemID || itemStruct.itemId == Item.helmetChain.itemID
+                || itemStruct.itemId == Item.legsChain.itemID || itemStruct.itemId == Item.plateChain.itemID)
+        {
+            itemStruct.showOnList = false;
         }
     }
 
@@ -55,7 +61,7 @@ public class VanillaSupport implements IDocModSupport
     public boolean isBaseItem(ItemStruct itemStruct)
     {
         return isOre(itemStruct)
-               || isIngot(itemStruct)
+               //|| isIngot(itemStruct)
                || isRawFood(itemStruct)
                || isBaseBlock(itemStruct)
                || isPlantBlock(itemStruct)
@@ -69,7 +75,9 @@ public class VanillaSupport implements IDocModSupport
                || isPlantRawDye(itemStruct)
                || isNonPlantRawDye(itemStruct)
                || isPlantDrop(itemStruct)
-               || isHeadOrSkull(itemStruct);
+               || isHeadOrSkull(itemStruct)
+               || itemStruct.rawName.equals("item.paper") // too many options to craft, just ignore them
+               || itemStruct.category.equals(API.STANDARD_CATEGORY_POTIONS); // not worth fixing it, so just ignore
     }
 
     @Override
@@ -181,7 +189,8 @@ public class VanillaSupport implements IDocModSupport
                || blockId == Block.mycelium.blockID
                || blockId == Block.obsidian.blockID
                || blockId == Block.sand.blockID
-               || blockId == Block.slowSand.blockID;
+               || blockId == Block.slowSand.blockID
+               || blockId == Block.ice.blockID;
     }
 
     protected boolean isPlantBlock(ItemStruct itemStruct)
@@ -254,7 +263,8 @@ public class VanillaSupport implements IDocModSupport
                || itemId == Item.enderPearl.itemID
                || itemId == Item.blazeRod.itemID
                || itemId == Item.spiderEye.itemID
-               || itemId == Item.ghastTear.itemID;
+               || itemId == Item.ghastTear.itemID
+               || itemId == Item.netherStar.itemID;
     }
 
     protected boolean isPlantRawDye(ItemStruct itemStruct)
