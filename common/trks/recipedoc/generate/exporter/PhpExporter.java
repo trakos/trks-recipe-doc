@@ -191,7 +191,7 @@ public class PhpExporter extends PrintWriter
                         writer.printlnAndIndent("'rawCost' => array(");
                         for (HashMap<IdDamagePair, Float> rawCost : item.rawCosts)
                         {
-                            writer.printlnAndIndent("new ItemRawCost('items' => array(");
+                            writer.printlnAndIndent("new ItemRawCost(array('items' => array(");
                             {
                                 for (IdDamagePair idDamagePair : rawCost.keySet())
                                 {
@@ -205,7 +205,7 @@ public class PhpExporter extends PrintWriter
                                     writer.undoIndentAndPrintln(")),");
                                 }
                             }
-                            writer.undoIndentAndPrintln(")),");
+                            writer.undoIndentAndPrintln("))),");
                         }
                         writer.undoIndentAndPrintln("),");
                     }
