@@ -162,15 +162,15 @@ public class MekanismSupport implements IDocModSupport
     public boolean isBaseItem(ItemStruct itemStruct)
     {
         return itemStruct.itemId == Item.itemsList[Mekanism.oreBlockID].itemID
-               || (
+               /*|| (
                 itemStruct.itemId == Mekanism.Ingot.itemID
                 && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedObsidian")
                 && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("ingotRefinedGlowstone")
         )
                || (
                 itemStruct.itemId == Mekanism.Dust.itemID
-                && !MekanismUtils.getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
-        ) || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
+                && !getOreDictName(itemStruct.getItemStack()).equals("dustRefinedObsidian")
+        )*/ || itemStruct.itemId == MekanismGenerators.BioFuel.itemID;
     }
 
     @Override
