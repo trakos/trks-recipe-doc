@@ -5,6 +5,7 @@ import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import net.minecraft.util.MD5String;
 import trks.recipedoc.generate.loaders.DataLoader;
+import trks.recipedoc.generate.loaders.DataNEIFetcher;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class RecipeStruct
 
     public RecipeStruct(ICraftingHandler craftingHandler, int recipeNumber)
     {
-        recipeHandlerName = craftingHandler.getRecipeName();
+        recipeHandlerName = DataNEIFetcher.getRecipeHandlerId(craftingHandler);
         getIngredients(craftingHandler, recipeNumber);
     }
 

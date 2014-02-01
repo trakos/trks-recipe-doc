@@ -4,7 +4,6 @@ import codechicken.nei.NEIClientUtils;
 import codechicken.nei.NEIController;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
-import codechicken.nei.recipe.IRecipeHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import trks.recipedoc.generate.Generate;
+import trks.recipedoc.generate.loaders.DataNEIFetcher;
 
 import java.awt.*;
 import java.io.File;
@@ -23,7 +23,7 @@ public class RecipeBackgroundRenderer
 {
     static public String getRecipeHandlerImageName(IRecipeHandler recipeHandler)
     {
-        return ScreenshotRenderer.toFileSystemSafeName(recipeHandler.getRecipeName().toLowerCase(), false, 32) + ".png";
+        return ScreenshotRenderer.toFileSystemSafeName(DataNEIFetcher.getRecipeHandlerId(recipeHandler), false, 255) + ".png";
     }
 
     static public void renderAll(ArrayList<ICraftingHandler> craftingHandlers)

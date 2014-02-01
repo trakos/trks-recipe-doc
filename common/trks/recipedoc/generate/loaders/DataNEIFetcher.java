@@ -52,6 +52,11 @@ public class DataNEIFetcher
         }
     }
 
+    static public String getRecipeHandlerId(ICraftingHandler craftingHandler)
+    {
+        return craftingHandler.getClass().getName();
+    }
+
     static protected ArrayList<ICraftingHandler> getActiveCraftingHandlers()
     {
         ArrayList<ICraftingHandler> foundHandlers = new ArrayList<ICraftingHandler>();
