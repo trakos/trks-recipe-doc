@@ -8,9 +8,7 @@ import trks.recipedoc.generate.renderers.DataRenderer;
 
 import java.io.File;
 
-/**
- * Created by trakos on 20.01.14.
- */
+
 public class Generate
 {
     static public final String directory = "C:/test";

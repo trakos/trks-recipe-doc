@@ -26,7 +26,7 @@ public class MekanismSupport implements IDocModSupport
 {
 
     static final String CATEGORY_MACHINES = "Machines";
-    static final String CATEGORY_DUSTS_CLAMPS = "Dusts & Clamps";
+    static final String CATEGORY_DUSTS_CLUMPS = "Dusts & Clumps";
     static final String CATEGORY_INGOTS = "Ingots";
     static final String CATEGORY_INDUCTION = "Induction";
     static final String CATEGORY_GENERATORS = "Generators";
@@ -98,7 +98,7 @@ public class MekanismSupport implements IDocModSupport
         {
             itemStruct.craftingComplexity = 100f;
         }
-        else if (itemStruct.category.equals(CATEGORY_DUSTS_CLAMPS))
+        else if (itemStruct.category.equals(CATEGORY_DUSTS_CLUMPS))
         {
             itemStruct.craftingComplexity = 1f;
         }
@@ -220,7 +220,7 @@ public class MekanismSupport implements IDocModSupport
                 .put(CATEGORY_E_TOOLS, .54f)
                 .put(CATEGORY_UPGRADES, .55f)
                 .put(CATEGORY_PIPES_CABLES, .555f)
-                .put(CATEGORY_DUSTS_CLAMPS, .56f)
+                .put(CATEGORY_DUSTS_CLUMPS, .56f)
                 .put(CATEGORY_INGOTS, .57f)
                 .build();
     }
@@ -457,7 +457,7 @@ public class MekanismSupport implements IDocModSupport
         }
         else if (item instanceof ItemDust || item instanceof ItemClump || item instanceof ItemDirtyDust)
         {
-            itemStruct.category = CATEGORY_DUSTS_CLAMPS;
+            itemStruct.category = CATEGORY_DUSTS_CLUMPS;
         }
         else if (item instanceof ItemIngot)
         {
