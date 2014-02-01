@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 public class RecipeBackgroundRenderer
 {
-    static public String getRecipeHandlerImageName(IRecipeHandler recipeHandler)
+    static public String getRecipeHandlerImageName(ICraftingHandler recipeHandler)
     {
         return ScreenshotRenderer.toFileSystemSafeName(DataNEIFetcher.getRecipeHandlerId(recipeHandler), false, 255) + ".png";
     }
