@@ -4,6 +4,7 @@ import codechicken.nei.recipe.FurnaceRecipeHandler;
 import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.ShapelessRecipeHandler;
+import trks.recipedoc.generate.loaders.DataNEIFetcher;
 import trks.recipedoc.generate.renderers.utils.RecipeBackgroundRenderer;
 
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class RecipeTypeStruct
     public RecipeTypeStruct(ICraftingHandler recipeHandler)
     {
         this.craftingHandler = recipeHandler;
-        this.typeId = recipeHandler.getRecipeName();
+        this.typeId = DataNEIFetcher.getRecipeHandlerId(recipeHandler);
         this.name = recipeHandler.getRecipeName();
         this.image = RecipeBackgroundRenderer.getRecipeHandlerImageName(recipeHandler);
 

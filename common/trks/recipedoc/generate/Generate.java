@@ -4,12 +4,11 @@ import trks.recipedoc.generate.exporter.PhpExporter;
 import trks.recipedoc.generate.exporter.XmlExporter;
 import trks.recipedoc.generate.finishers.ItemCostCalculator;
 import trks.recipedoc.generate.loaders.DataLoader;
+import trks.recipedoc.generate.renderers.DataRenderer;
 
 import java.io.File;
 
-/**
- * Created by trakos on 20.01.14.
- */
+
 public class Generate
 {
     static public final String directory = "C:/test";
@@ -41,7 +40,7 @@ public class Generate
     {
         init();
         DataLoader dataLoader = new DataLoader();
-        //DataRenderer.render(DataLoader.items);
+        DataRenderer.render(dataLoader.items);
         ItemCostCalculator dataCalculator = new ItemCostCalculator(dataLoader.items, dataLoader.recipes);
         dataCalculator._printNotCraftedItems();
 

@@ -16,7 +16,7 @@ public class GalactiCraftSupport implements IDocModSupport
     @Override
     public Boolean shouldCorrectItemFromMod(String modId)
     {
-        return modId.equals("GalacticraftCore");
+        return modId.equals("GalacticraftCore") || modId.equals("GalacticraftMars");
     }
 
     @Override
@@ -31,7 +31,10 @@ public class GalactiCraftSupport implements IDocModSupport
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        return false;
+        return itemStruct.rawName.equals("tile.mars.marsstone")
+                || itemStruct.rawName.equals("tile.mars.marsdirt")
+                || itemStruct.rawName.equals("tile.mars.marsgrass")
+                || itemStruct.rawName.equals("tile.mars.deshmars");
     }
 
     @Override

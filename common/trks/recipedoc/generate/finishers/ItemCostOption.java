@@ -1,5 +1,7 @@
 package trks.recipedoc.generate.finishers;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import trks.recipedoc.generate.structs.IdDamagePair;
 import trks.recipedoc.generate.structs.ItemStruct;
 import trks.recipedoc.generate.structs.RecipeItemStruct;
@@ -33,12 +35,15 @@ public class ItemCostOption implements Cloneable
     public float resultAmount = 1;
     public HashSet<String> craftingHandlers = new HashSet<String>();
 
+    protected HashMap<IdDamagePair, ItemStruct> itemStructHashMap;
+
     protected ItemCostOption()
     {
     }
 
     public ItemCostOption(RecipeStruct recipeStruct, HashMap<IdDamagePair, ItemStruct> itemStructHashMap)
     {
+        this.itemStructHashMap = itemStructHashMap;
         areAllItemsBase = true;
         for (RecipeItemStruct ingredient : recipeStruct.items)
         {
@@ -47,7 +52,8 @@ public class ItemCostOption implements Cloneable
                 resultAmount = ingredient.amount;
                 continue;
             }
-            else if (recipeStruct.recipeHandlerName.equals("Smelting") && ingredient.elementType == RecipeItemStruct.RecipeElementType.other)
+            else if (recipeStruct.recipeHandlerName.equals("Smelting")
+                     && ingredient.elementType == RecipeItemStruct.RecipeElementType.other)
             {
                 continue;
             }
@@ -84,7 +90,15 @@ public class ItemCostOption implements Cloneable
 
         for (IdDamagePair idDamagePair : items.keySet())
         {
-            if (!otherOption.hasItem(idDamagePair) || (otherOption.items.get(idDamagePair).amount) < items.get(idDamagePair).amount)
+            if (!otherOption.hasItem(idDamagePair))
+            {
+                IdDamagePair equalOreIdDamagePair = otherOption.hasItemEqualAccordingToOreDictionary(idDamagePair);
+                if (equalOreIdDamagePair == null || otherOption.items.get(equalOreIdDamagePair).amount < items.get(idDamagePair).amount)
+                {
+                    return false;
+                }
+            }
+            else if (otherOption.items.get(idDamagePair).amount < items.get(idDamagePair).amount)
             {
                 return false;
             }
@@ -115,6 +129,7 @@ public class ItemCostOption implements Cloneable
         }
         other.resultAmount = resultAmount;
         other.areAllItemsBase = areAllItemsBase;
+        other.itemStructHashMap = itemStructHashMap;
         return other;
     }
 
@@ -129,7 +144,8 @@ public class ItemCostOption implements Cloneable
         newCostOption.items.remove(item);
         for (IdDamagePair idDamagePair : recipeCost.items.keySet())
         {
-            float ingredientAmount = recipeCost.items.get(idDamagePair).amount * recipeNeedAmount / recipeCost.resultAmount;
+            float ingredientAmount = recipeCost.items.get(idDamagePair).amount * recipeNeedAmount
+                                     / recipeCost.resultAmount;
             newCostOption.addIngredient(idDamagePair, ingredientAmount, recipeCost.items.get(idDamagePair).isBaseItem);
         }
         newCostOption._checkIfBase();
@@ -139,6 +155,34 @@ public class ItemCostOption implements Cloneable
     public boolean hasItem(IdDamagePair itemId)
     {
         return items.containsKey(itemId);
+    }
+
+    public IdDamagePair hasItemEqualAccordingToOreDictionary(IdDamagePair needleIdDamagePair)
+    {
+        ItemStruct needleStruct = itemStructHashMap.get(needleIdDamagePair);
+        if (needleStruct != null)
+        {
+            ItemStack needleStack = needleStruct.getItemStack();
+            int needleOreId = OreDictionary.getOreID(needleStack);
+            if (needleOreId == -1)
+            {
+                return null;
+            }
+            for (IdDamagePair hayElementIdDamagePair : items.keySet())
+            {
+                ItemStruct hayStruct = itemStructHashMap.get(hayElementIdDamagePair);
+                if (hayStruct != null)
+                {
+                    int hayElementOreId = OreDictionary.getOreID(hayStruct.getItemStack());
+                    if (hayElementOreId != -1 && hayElementOreId == needleOreId)
+                    {
+                        return hayElementIdDamagePair;
+                    }
+
+                }
+            }
+        }
+        return null;
     }
 
     protected void _checkIfBase()

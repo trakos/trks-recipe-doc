@@ -8,10 +8,7 @@ import trks.recipedoc.api.API;
 import trks.recipedoc.generate.loaders.DataLoader;
 import trks.recipedoc.generate.loaders.DataNEIFetcher;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ItemStruct extends IdDamagePairWithStack
 {
@@ -35,7 +32,6 @@ public class ItemStruct extends IdDamagePairWithStack
      */
     public boolean isBaseItem;
     public float craftingComplexity = 10;
-    public float itemCost;
 
     public ItemStruct(ItemStack itemStack)
     {
@@ -45,7 +41,7 @@ public class ItemStruct extends IdDamagePairWithStack
         this.rawName = itemStack.getUnlocalizedName();
 
         this.tooltipDescription = getNameList(itemStack);
-        //noinspection unchecked
+
         fillAttributes(this.attributes, itemStack.getAttributeModifiers());
 
         this.mod = DataLoader.getItemModId(itemStack.itemID);
@@ -53,6 +49,8 @@ public class ItemStruct extends IdDamagePairWithStack
         this.category = getTypeCategory(this.type);
 
         this.showOnList = true;
+
+        this.isBaseItem = this.rawName.toLowerCase().contains(".ore") || this.rawName.endsWith("Ore");
     }
 
     public ArrayList<HashMap<IdDamagePair, Float>> rawCosts = new ArrayList<HashMap<IdDamagePair, Float>>();
@@ -66,8 +64,9 @@ public class ItemStruct extends IdDamagePairWithStack
     {
         for (Object key : attributes.keys())
         {
-            //noinspection unchecked
-            for (Object w : attributes.get(key))
+            @SuppressWarnings("unchecked")
+            Collection collection = attributes.get(key);
+            for (Object w : collection)
             {
                 AttributeModifier value = (AttributeModifier) w;
                 map.put(value.getName(), Double.toString(value.getAmount()));
