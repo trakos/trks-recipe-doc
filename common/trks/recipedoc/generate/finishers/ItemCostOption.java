@@ -52,7 +52,7 @@ public class ItemCostOption implements Cloneable
                 resultAmount = ingredient.amount;
                 continue;
             }
-            else if (recipeStruct.recipeHandlerName.equals("Smelting")
+            else if (recipeStruct.recipeHandlerName.equals("codechicken.nei.recipe.FurnaceRecipeHandler")
                      && ingredient.elementType == RecipeItemStruct.RecipeElementType.other)
             {
                 continue;

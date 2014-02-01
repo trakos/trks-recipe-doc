@@ -33,6 +33,11 @@ public class AppliedEnergeticsSupport implements IDocModSupport
             itemStruct.craftingComplexity = .1f;
             itemStruct.isBaseItem = false;
         }
+        else if (itemStruct.rawName.equals("AppEng.Blocks.Terminal") || itemStruct.rawName.equals("AppEng.Items.WirelessTerminal") || itemStruct.rawName.equals("AppEng.Blocks.CraftingTerminal"))
+        {
+            // they're quite complex and it will be easier to count raw cost this way
+            itemStruct.craftingComplexity = 100f;
+        }
     }
 
     @Override

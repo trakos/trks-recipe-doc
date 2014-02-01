@@ -52,7 +52,9 @@ public class ItemStruct extends IdDamagePairWithStack
 
         this.showOnList = true;
 
-        this.isBaseItem =  isInOreDictionary(getItemStack()) || isNameSuggestingBeingBase();
+
+        this.isBaseItem = isInOreDictionary(getItemStack()) || isNameSuggestingBeingBase();
+        this.craftingComplexity = rawName.toLowerCase().contains("ingot") || rawName.toLowerCase().contains("silver") ? 0.001f : 0;
     }
 
     protected boolean isInOreDictionary(ItemStack check)
@@ -100,9 +102,9 @@ public class ItemStruct extends IdDamagePairWithStack
 
     protected boolean isNameSuggestingBeingBase()
     {
-        String name = this.name.toLowerCase();
+        String name = this.rawName.toLowerCase();
         return
-                name.contains("ingot") /*|| name.contains("dust")*/ || name.contains("ore") /*|| name.contains("paper")*/
+                name.contains("ingot") || /*name.contains("dust") ||*/ name.contains("ore") /*|| name.contains("paper")*/
                 || name.contains("bucket") || name.contains("facade");
     }
 
