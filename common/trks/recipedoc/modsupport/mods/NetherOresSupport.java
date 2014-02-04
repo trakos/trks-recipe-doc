@@ -11,38 +11,35 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-public class GalactiCraftSupport implements IDocModSupport
+/**
+ * more like anti-support; we're ignoring ores in raw cost calculations
+ * as it would generate too many recipe alternatives
+ */
+public class NetherOresSupport implements IDocModSupport
 {
+
     @Override
     public Boolean shouldCorrectItemFromMod(String modId)
     {
-        return modId.equals("GalacticraftCore") || modId.equals("GalacticraftMars");
+        return modId.equals("NetherOres");
     }
 
     @Override
     public void correctItemStruct(ItemStruct itemStruct, IRecipeHandlerMachineRegistrar recipeHandlerMachineRegistrar)
     {
-        // lets not use it to raw cost calculations - they're essentially duplicates, causing too much alternatives
-        if (itemStruct.rawName.equals("tile.moonBlock.tinmoon") || itemStruct.rawName.equals("tile.moonBlock.coppermoon"))
-        {
-            itemStruct.isBaseItem = false;
-        }
+
     }
 
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        return itemStruct.rawName.equals("tile.mars.marsstone")
-                || itemStruct.rawName.equals("tile.mars.marsdirt")
-                || itemStruct.rawName.equals("tile.mars.marsgrass")
-                || itemStruct.rawName.equals("tile.mars.deshmars")
-                || itemStruct.rawName.equals("tile.moonBlock.cheesestone");
+        return false;
     }
 
     @Override
     public Collection<String> getModsRequiredToBeLoaded()
     {
-        return Arrays.asList("GalacticraftCore");
+        return Arrays.asList("NetherOres");
     }
 
     @Override
@@ -54,7 +51,7 @@ public class GalactiCraftSupport implements IDocModSupport
     @Override
     public void correctRecipeStruct(RecipeStruct recipeStruct, ICraftingHandler handler)
     {
-
+        recipeStruct.useInRawCostCalculation = false;
     }
 
     @Override

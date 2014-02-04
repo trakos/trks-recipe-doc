@@ -30,6 +30,7 @@ public class ModSupportHandler
         API.registerModSupport(new MekanismSupport());
         API.registerModSupport(new MineFactoryReloadedSupport());
         API.registerModSupport(new MystcraftSupport());
+        API.registerModSupport(new NetherOresSupport());
         API.registerModSupport(new QuantumCraftSupport());
         API.registerModSupport(new ThermalExpansionSupport());
         API.registerModSupport(new VanillaSupport());

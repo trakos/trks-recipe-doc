@@ -29,18 +29,22 @@ public class ThermalExpansionSupport implements IDocModSupport
         //if (itemStruct.rawName.startsWith("item.material.dust") || itemStruct.rawName.equals("item.material.ingotInvar") || itemStruct.rawName.equals("item.material.ingotElectrum"))
         if (!itemStruct.rawName.startsWith("ore.") && !itemStruct.rawName.equals("item.material.sawdust"))
         {
-            if (itemStruct.isBaseItem)
+            if (itemStruct.rawName.toLowerCase().contains("ingot"))
+            {
+                itemStruct.craftingComplexity = .01f;
+            }
+            else if (itemStruct.isBaseItem)
             {
                 itemStruct.craftingComplexity = .1f;
+                itemStruct.isBaseItem = false;
             }
-            itemStruct.isBaseItem = false;
         }
     }
 
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        return itemStruct.rawName.equals("item.material.sawdust");
+        return itemStruct.rawName.equals("item.material.sawdust") || itemStruct.rawName.toLowerCase().contains("ingot");
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ThermalExpansionSupport implements IDocModSupport
     @Override
     public void correctRecipeStruct(RecipeStruct recipeStruct, ICraftingHandler handler)
     {
-        if (recipeStruct.recipeHandlerName.equals("Pulverizer"))
+        if (recipeStruct.recipeHandlerName.equals("thermalexpansion.plugins.nei.handlers.PulverizerRecipeHandler"))
         {
             for (Iterator<RecipeItemStruct> iterator = recipeStruct.items.iterator(); iterator.hasNext(); )
             {
