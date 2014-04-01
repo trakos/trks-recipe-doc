@@ -132,6 +132,7 @@ public class VanillaSupport implements IDocModSupport
                 || itemId == Block.oreGold.blockID || itemId == Block.oreIron.blockID
                 || itemId == Block.oreLapis.blockID || itemId == Block.oreNetherQuartz.blockID
                 || itemId == Block.oreRedstone.blockID
+                || itemStruct.rawName.equals("item.netherquartz")
         );
     }
 

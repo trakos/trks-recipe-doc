@@ -15,6 +15,7 @@ import trks.recipedoc.generate.structs.RecipeStruct;
 import trks.recipedoc.generate.structs.RecipeTypeStruct;
 import trks.recipedoc.modsupport.ModSupportHandler;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -101,6 +102,23 @@ public class DataLoader
         for (ICraftingHandler craftingHandler : GuiCraftingRecipe.craftinghandlers)
         {
             ICraftingHandler handler = craftingHandler.getRecipeHandler("item", itemStack.copy());
+            // galacticraft has a ticksPassed property that makes result visible only in the 51-70 or 53-70 ticks
+            try
+            {
+                Field ticksPassed = handler.getClass().getDeclaredField("ticksPassed");
+                ticksPassed.setAccessible(true);
+                ticksPassed.setInt(handler, 60);
+                System.out.println("reflectively changing ticksPassed succeeded on " + handler.getClass().getName());
+            }
+            catch (NoSuchFieldException e)
+            {
+                // ignore
+            }
+            catch (Exception e)
+            {
+                System.out.println("reflectively changing ticksPassed failed");
+                System.out.println(e);
+            }
             if (handler.numRecipes() > 0)
             {
                 for(int i = 0; i < handler.numRecipes(); i++)

@@ -1,6 +1,5 @@
 package trks.recipedoc.modsupport.mods;
 
-import codechicken.nei.recipe.FurnaceRecipeHandler;
 import codechicken.nei.recipe.ICraftingHandler;
 import trks.recipedoc.api.IDocModSupport;
 import trks.recipedoc.api.IRecipeHandlerMachineRegistrar;
@@ -43,11 +42,9 @@ public class AppliedEnergeticsSupport implements IDocModSupport
     @Override
     public boolean isBaseItem(ItemStruct itemStruct)
     {
-        if (itemStruct.getItemStack().getDisplayName().equals("Quartz Cutting Knife"))
-        {
-            return true;
-        }
-        return itemStruct.isBaseItem;
+        return itemStruct.getItemStack().getDisplayName().equals("Quartz Cutting Knife")
+               || itemStruct.rawName.equals("AppEng.Materials.QuartzCrystal")
+               || itemStruct.isBaseItem;
     }
 
     @Override
@@ -76,12 +73,12 @@ public class AppliedEnergeticsSupport implements IDocModSupport
         }
         else if (result.getItemStack().getDisplayName().equals("Silicon"))
         {
-            if (handler instanceof FurnaceRecipeHandler)
+            /*if (handler instanceof FurnaceRecipeHandler)
             {
                 recipeStruct.useInRawCostCalculation = false;
             }
             else
-            {
+            {*/
                 for (RecipeItemStruct item : recipeStruct.items)
                 {
                     if (item.elementType == RecipeItemStruct.RecipeElementType.result)
@@ -97,7 +94,7 @@ public class AppliedEnergeticsSupport implements IDocModSupport
                         }
                     }
                 }
-            }
+            //}
         }
     }
 

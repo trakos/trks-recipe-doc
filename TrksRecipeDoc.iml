@@ -33,17 +33,16 @@
     <orderEntry type="module-library">
       <library name="PHP">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../starbound_log/trks" />
-          <root url="file://$MODULE_DIR$/../../starbound_log/zend" />
+          <root url="file://$MODULE_DIR$/../../phpincludes" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../../starbound_log/trks" />
-          <root url="file://$MODULE_DIR$/../../starbound_log/zend" />
+          <root url="file://$MODULE_DIR$/../../phpincludes" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Mekanism" />
+    <orderEntry type="library" name="GC-Dev-Deobf-1.6.2-2.0.5.57" level="project" />
   </component>
 </module>
 

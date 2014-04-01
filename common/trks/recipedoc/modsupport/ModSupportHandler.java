@@ -25,12 +25,14 @@ public class ModSupportHandler
         API.registerModSupport(new ComputerCraftSupport());
         API.registerModSupport(new DimDoorsSupport());
         API.registerModSupport(new EE3Support());
+        API.registerModSupport(new ForgeMicroblockSupport());
         API.registerModSupport(new GalactiCraftSupport());
         API.registerModSupport(new LogisticsPipesSupport());
         API.registerModSupport(new MekanismSupport());
         API.registerModSupport(new MineFactoryReloadedSupport());
         API.registerModSupport(new MystcraftSupport());
         API.registerModSupport(new NetherOresSupport());
+        API.registerModSupport(new ProjRedSupport());
         API.registerModSupport(new QuantumCraftSupport());
         API.registerModSupport(new ThermalExpansionSupport());
         API.registerModSupport(new VanillaSupport());
